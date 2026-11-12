@@ -22,8 +22,16 @@ export default function FleetPage() {
       {/* Header & Summary Filter Pills */}
       <div className="bg-white rounded-2xl p-3.5 border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-base font-bold text-slate-900">🚛 สถานะรถส่วนกลาง ({vehicles.length} คัน)</h1>
-          <p className="text-xs text-slate-500">ตรวจสอบและอัปเดตสถานะการใช้งานรถประจำวัน</p>
+          <h1 className="text-base font-bold text-slate-900 flex items-center gap-2">
+            <svg className="w-5 h-5 text-slate-700 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="1" y="3" width="15" height="13" rx="1" />
+              <polygon points="16 8 20 8 23 11 23 16 16 16 8" />
+              <circle cx="5.5" cy="18.5" r="2.5" />
+              <circle cx="18.5" cy="18.5" r="2.5" />
+            </svg>
+            <span>สถานะรถส่วนกลาง ({vehicles.length} คัน)</span>
+          </h1>
+          <p className="text-xs text-slate-500 mt-0.5">ตรวจสอบและอัปเดตสถานะการใช้งานรถประจำวัน</p>
         </div>
 
         <div className="flex items-center gap-1.5 flex-wrap">

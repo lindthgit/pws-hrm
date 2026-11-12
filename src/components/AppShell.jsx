@@ -5,7 +5,7 @@ import DeveloperBar from './DeveloperBar'
 import { formatThaiDateShort } from '../lib/dateUtils'
 
 // Monochrome SVG Icons (styled by currentColor)
-function NavIcon({ name, className = "w-5 h-5" }) {
+export function NavIcon({ name, className = "w-5 h-5" }) {
   switch (name) {
     case 'dashboard':
       return (
@@ -79,6 +79,40 @@ function NavIcon({ name, className = "w-5 h-5" }) {
           <circle cx="5" cy="12" r="1.5" />
         </svg>
       )
+    case 'bell':
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+          <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+        </svg>
+      )
+    case 'leave':
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+        </svg>
+      )
+    case 'ot':
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="10" />
+          <polyline points="12 6 12 12 16 14" />
+        </svg>
+      )
+    case 'trash':
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="3 6 5 6 21 6" />
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+        </svg>
+      )
+    case 'lock':
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+        </svg>
+      )
     default:
       return null
   }
@@ -118,7 +152,7 @@ export default function AppShell({ children }) {
     notifItems = [
       ...pendingLeaves.map(lv => ({
         id: `lv-${lv.id}`,
-        icon: '🏖️',
+        iconType: 'leave',
         title: `ขอ${lv.leave_type}: ${lv.worker_name}`,
         subtitle: `${formatThaiDateShort(lv.start_date)} (${lv.total_days} วัน) • ${lv.reason}`,
         actionHint: 'คลิกเพื่อไปหน้า วันลา & OT →',
@@ -126,22 +160,22 @@ export default function AppShell({ children }) {
       })),
       ...pendingOts.map(ot => ({
         id: `ot-${ot.id}`,
-        icon: '⏱️',
+        iconType: 'ot',
         title: `ขอ OT: ${ot.worker_name} (${ot.team_name})`,
         subtitle: `${formatThaiDateShort(ot.date_val)} • ${ot.hours_slot}`,
         actionHint: 'คลิกเพื่อไปหน้า วันลา & OT →',
         targetTab: 'approvals'
       })),
       ...recentAudits.map(log => {
-        let actionBadge = '⚙️ แก้ไข'
-        if (log.action_type === 'delete') actionBadge = '🗑️ ลบ'
-        if (log.action_type === 'create') actionBadge = '✨ เพิ่ม'
-        if (log.action_type === 'permission_change') actionBadge = '🔐 ปรับสิทธิ์'
+        let actionBadge = 'แก้ไข'
+        if (log.action_type === 'delete') actionBadge = 'ลบ'
+        if (log.action_type === 'create') actionBadge = 'เพิ่ม'
+        if (log.action_type === 'permission_change') actionBadge = 'ปรับสิทธิ์'
 
         return {
           id: `audit-${log.id}`,
-          icon: log.action_type === 'delete' ? '🗑️' : log.action_type === 'permission_change' ? '🔐' : '⚙️',
-          title: `${actionBadge} ${log.target_name}`,
+          iconType: log.action_type === 'delete' ? 'trash' : log.action_type === 'permission_change' ? 'lock' : 'master',
+          title: `[${actionBadge}] ${log.target_name}`,
           subtitle: `${log.details || ''} • โดย ${log.performed_by_name} (${log.performed_by_role})`,
           actionHint: 'คลิกเพื่อดูประวัติตั้งค่าระบบ →',
           targetTab: 'master'
@@ -158,7 +192,7 @@ export default function AppShell({ children }) {
     notifItems = [
       ...branchLeaves.map(lv => ({
         id: `lv-${lv.id}`,
-        icon: '🏖️',
+        iconType: 'leave',
         title: `คำขอลาสาขา: ${lv.worker_name}`,
         subtitle: `${formatThaiDateShort(lv.start_date)} • ${lv.leave_type} (${lv.reason})`,
         actionHint: 'คลิกเพื่อดูสถานะ →',
@@ -166,7 +200,7 @@ export default function AppShell({ children }) {
       })),
       ...branchOts.map(ot => ({
         id: `ot-${ot.id}`,
-        icon: '⏱️',
+        iconType: 'ot',
         title: `คำขอ OT สาขา: ${ot.worker_name}`,
         subtitle: `${formatThaiDateShort(ot.date_val)} • ${ot.hours_slot}`,
         actionHint: 'คลิกเพื่อดูสถานะ →',
@@ -183,7 +217,7 @@ export default function AppShell({ children }) {
     notifItems = [
       ...teamLeaves.map(lv => ({
         id: `lv-${lv.id}`,
-        icon: '🏖️',
+        iconType: 'leave',
         title: `สมาชิกในทีมขอลา: ${lv.worker_name}`,
         subtitle: `${formatThaiDateShort(lv.start_date)} • ${lv.leave_type}`,
         actionHint: 'ดูสถานะ →',
@@ -191,7 +225,7 @@ export default function AppShell({ children }) {
       })),
       ...teamOts.map(ot => ({
         id: `ot-${ot.id}`,
-        icon: '⏱️',
+        iconType: 'ot',
         title: `สมาชิกในทีมขอ OT: ${ot.worker_name}`,
         subtitle: `${formatThaiDateShort(ot.date_val)} • ${ot.hours_slot}`,
         actionHint: 'ดูสถานะ →',
@@ -205,16 +239,16 @@ export default function AppShell({ children }) {
     notifItems = [
       ...myRecentLeaves.map(lv => ({
         id: `lv-${lv.id}`,
-        icon: '🏖️',
-        title: `ใบลาของคุณ: ${lv.leave_type} (${lv.status === 'approved' ? '✓ อนุมัติแล้ว' : lv.status === 'rejected' ? '✕ ไม่อนุมัติ' : '⏳ รออนุมัติ'})`,
+        iconType: 'leave',
+        title: `ใบลาของคุณ: ${lv.leave_type} (${lv.status === 'approved' ? 'อนุมัติแล้ว' : lv.status === 'rejected' ? 'ไม่อนุมัติ' : 'รออนุมัติ'})`,
         subtitle: `${formatThaiDateShort(lv.start_date)} (${lv.total_days} วัน) • ${lv.reason}`,
         actionHint: 'ดูข้อมูลส่วนตัว →',
         targetTab: 'profile'
       })),
       ...myRecentOts.map(ot => ({
         id: `ot-${ot.id}`,
-        icon: '⏱️',
-        title: `คำขอ OT ของคุณ (${ot.status === 'approved' ? '✓ อนุมัติแล้ว' : ot.status === 'rejected' ? '✕ ไม่อนุมัติ' : '⏳ รออนุมัติ'})`,
+        iconType: 'ot',
+        title: `คำขอ OT ของคุณ (${ot.status === 'approved' ? 'อนุมัติแล้ว' : ot.status === 'rejected' ? 'ไม่อนุมัติ' : 'รออนุมัติ'})`,
         subtitle: `${formatThaiDateShort(ot.date_val)} • ${ot.hours_slot}`,
         actionHint: 'ดูข้อมูลส่วนตัว →',
         targetTab: 'profile'
@@ -251,35 +285,30 @@ export default function AppShell({ children }) {
 
   const visibleNavItems = allNavItems.filter(item => canViewModule(item.id, effectiveRole))
 
-  // Mobile Bottom Bar item breakdown:
-  // Primary 4 items + "เพิ่มเติม" (More) for multi-module roles
-  const isWorker = effectiveRole === 'worker'
+  // Mobile Bottom Bar item breakdown rule:
+  // If visible items <= 5, show ALL directly on the bottom bar! No "เพิ่มเติม" button needed.
+  // If visible items > 5 (Owner/HR with 6-7 items), show top 4 + "เพิ่มเติม" (with the rest inside, and Master at the end).
+  const hasMoreMenu = visibleNavItems.length > 5
 
-  const mobilePrimaryTabs = isWorker
-    ? [
-        { id: 'selfservice', label: 'ยื่นใบลา / OT' },
-        { id: 'profile', label: 'ข้อมูลส่วนตัว' }
-      ]
-    : [
-        { id: 'dashboard', label: 'ภาพรวม' },
-        { id: 'clerk', label: 'ใบงาน/เวลา' },
-        { id: 'fleet', label: 'สถานะรถ' },
-        {
-          id: 'approvals',
-          label: 'วันลา & OT',
-          badgeCount: (effectiveRole === 'owner' || effectiveRole === 'hr') ? notifBadgeCount : 0
-        }
-      ].filter(item => canViewModule(item.id, effectiveRole))
+  let mobilePrimaryTabs = []
+  let mobileMoreItems = []
 
-  // Secondary menu items inside "เพิ่มเติม" (Ordered per user spec: Planner, Self-Service, Profile, Master Data at the end)
-  const mobileMoreItems = [
-    { id: 'planner', label: 'วางแผนเดือน', show: canViewModule('planner', effectiveRole) },
-    { id: 'selfservice', label: 'ยื่นใบลา / OT', show: canViewModule('selfservice', effectiveRole) },
-    { id: 'profile', label: 'ข้อมูลส่วนตัว', show: true },
-    { id: 'master', label: 'ตั้งค่าระบบ', show: canViewModule('master', effectiveRole) }
-  ].filter(item => item.show)
+  if (!hasMoreMenu) {
+    mobilePrimaryTabs = visibleNavItems
+    mobileMoreItems = []
+  } else {
+    const primaryOrder = ['dashboard', 'clerk', 'fleet', 'approvals']
+    mobilePrimaryTabs = primaryOrder
+      .map(id => visibleNavItems.find(item => item.id === id))
+      .filter(Boolean)
 
-  const isMoreTabActive = mobileMoreItems.some(item => item.id === activeTab)
+    const moreOrder = ['planner', 'selfservice', 'profile', 'master']
+    mobileMoreItems = moreOrder
+      .map(id => visibleNavItems.find(item => item.id === id))
+      .filter(Boolean)
+  }
+
+  const isMoreTabActive = hasMoreMenu && mobileMoreItems.some(item => item.id === activeTab)
 
   function handleNotifItemClick(targetTab) {
     setNotifOpen(false)
@@ -297,15 +326,16 @@ export default function AppShell({ children }) {
       <DeveloperBar />
 
       {/* Top Header */}
-      <header className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-xs">
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xs">
         <div className="max-w-[1600px] mx-auto px-4 h-14 flex items-center justify-between gap-3">
-          {/* Brand with Marine / Ocean Blue Theme */}
+          {/* Brand with Marine Octopus Icon */}
           <div className="flex items-center gap-3">
             <div
               onClick={() => setActiveTab(visibleNavItems[0]?.id || 'profile')}
-              className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#0284c7] to-[#0d9488] flex items-center justify-center text-white font-extrabold text-sm shadow-xs cursor-pointer"
+              className="w-9 h-9 rounded-xl bg-[#0a1d30] border border-cyan-500/30 flex items-center justify-center p-1.5 shadow-xs cursor-pointer hover:border-cyan-400 transition"
+              title="PWS Operations"
             >
-              PWS
+              <img src="/favicon.svg" alt="PWS Octopus Logo" className="w-full h-full object-contain" />
             </div>
             <div>
               <div className="flex items-center gap-2">
@@ -333,7 +363,7 @@ export default function AppShell({ children }) {
                 className="relative p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition"
                 title="การแจ้งเตือน"
               >
-                <span className="text-base">🔔</span>
+                <NavIcon name="bell" className="w-5 h-5 text-slate-700" />
                 {notifBadgeCount > 0 && (
                   <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center animate-pulse">
                     {notifBadgeCount}
@@ -344,8 +374,9 @@ export default function AppShell({ children }) {
               {notifOpen && (
                 <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden z-50">
                   <div className="px-4 py-3 bg-slate-900 text-white flex items-center justify-between">
-                    <span className="text-xs font-bold">
-                      🔔 การแจ้งเตือน {notifBadgeCount > 0 ? `(${notifBadgeCount} รายการรออนุมัติ)` : ''}
+                    <span className="text-xs font-bold flex items-center gap-2">
+                      <NavIcon name="bell" className="w-4 h-4 text-cyan-400" />
+                      การแจ้งเตือน {notifBadgeCount > 0 ? `(${notifBadgeCount} รายการรออนุมัติ)` : ''}
                     </span>
                     <button
                       onClick={() => setNotifOpen(false)}
@@ -366,8 +397,8 @@ export default function AppShell({ children }) {
                           onClick={() => handleNotifItemClick(item.targetTab)}
                           className="w-full text-left p-3 hover:bg-cyan-50/70 transition flex items-start gap-2.5"
                         >
-                          <span className="w-7 h-7 rounded-lg bg-cyan-100 text-cyan-800 flex items-center justify-center text-xs font-bold shrink-0">
-                            {item.icon}
+                          <span className="w-7 h-7 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center shrink-0">
+                            <NavIcon name={item.iconType || 'bell'} className="w-4 h-4 text-slate-600" />
                           </span>
                           <div className="min-w-0 flex-1">
                             <div className="text-xs font-bold text-slate-800 truncate">
@@ -376,7 +407,7 @@ export default function AppShell({ children }) {
                             <div className="text-[11px] text-slate-500 line-clamp-2 mt-0.5">
                               {item.subtitle}
                             </div>
-                            <div className="text-[10px] text-cyan-700 font-semibold mt-1">
+                            <div className="text-[10px] text-[#0284c7] font-semibold mt-1">
                               {item.actionHint}
                             </div>
                           </div>
@@ -393,7 +424,7 @@ export default function AppShell({ children }) {
               onClick={() => setActiveTab('profile')}
               className={`px-2.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition border ${
                 activeTab === 'profile'
-                  ? 'bg-cyan-50 text-cyan-800 border-cyan-200'
+                  ? 'bg-sky-50 text-[#0284c7] border-sky-200'
                   : 'bg-slate-100 text-slate-700 border-transparent hover:bg-slate-200'
               }`}
             >
@@ -415,7 +446,7 @@ export default function AppShell({ children }) {
 
       {/* Main Content Area with Desktop Sidebar */}
       <div className="flex-1 flex max-w-[1600px] w-full mx-auto">
-        {/* Desktop Sidebar (Hidden on mobile) */}
+        {/* Desktop Sidebar (Solid active color, no gradient) */}
         <aside className="hidden lg:flex flex-col w-60 shrink-0 bg-white border-r border-slate-200 p-3 justify-between">
           <nav className="space-y-1">
             {visibleNavItems.map(item => {
@@ -426,7 +457,7 @@ export default function AppShell({ children }) {
                   onClick={() => setActiveTab(item.id)}
                   className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-bold transition ${
                     isActive
-                      ? 'bg-gradient-to-r from-[#0284c7] to-[#0d9488] text-white shadow-xs'
+                      ? 'bg-[#0284c7] text-white shadow-xs'
                       : 'text-slate-600 hover:bg-slate-100'
                   }`}
                 >
@@ -437,7 +468,7 @@ export default function AppShell({ children }) {
                   {item.badgeCount > 0 && (
                     <span
                       className={`px-1.5 py-0.5 rounded-full text-[10px] font-extrabold ${
-                        isActive ? 'bg-white text-cyan-800' : 'bg-rose-500 text-white'
+                        isActive ? 'bg-white text-[#0284c7]' : 'bg-rose-500 text-white'
                       }`}
                     >
                       {item.badgeCount}
@@ -455,8 +486,8 @@ export default function AppShell({ children }) {
         </main>
       </div>
 
-      {/* Mobile Bottom Navigation Bar (Hidden on desktop lg+) */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/90 shadow-[0_-4px_16px_rgba(0,0,0,0.06)] px-2 pt-2 pb-[max(0.85rem,env(safe-area-inset-bottom))]">
+      {/* Mobile Bottom Navigation Bar (Hidden on desktop lg+) - Docked Glassmorphism */}
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/85 backdrop-blur-xl border-t border-slate-200/60 shadow-[0_-4px_20px_rgba(0,0,0,0.04)] px-2 pt-2 pb-[max(0.85rem,env(safe-area-inset-bottom))]">
         <div className="flex items-center justify-around max-w-md mx-auto">
           {mobilePrimaryTabs.map(item => {
             const isActive = activeTab === item.id
@@ -479,8 +510,8 @@ export default function AppShell({ children }) {
             )
           })}
 
-          {/* "เพิ่มเติม" (More Button) - only for multi-tab roles */}
-          {!isWorker && mobileMoreItems.length > 0 && (
+          {/* "เพิ่มเติม" (More Button) - only when there are more than 5 tabs */}
+          {hasMoreMenu && mobileMoreItems.length > 0 && (
             <button
               onClick={() => setMoreMenuOpen(!moreMenuOpen)}
               className={`relative flex-1 flex flex-col items-center justify-center py-1 rounded-xl transition ${
@@ -498,7 +529,7 @@ export default function AppShell({ children }) {
       </nav>
 
       {/* Mobile "เพิ่มเติม" (More Menu) Bottom Sheet */}
-      {moreMenuOpen && (
+      {moreMenuOpen && hasMoreMenu && (
         <div className="lg:hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex flex-col justify-end">
           <div
             className="flex-1"

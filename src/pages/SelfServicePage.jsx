@@ -113,15 +113,23 @@ export default function SelfServicePage() {
       {/* Header & Status Banner */}
       <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-base font-bold text-slate-900">📝 ยื่นใบลา / ขอทำ OT</h1>
-          <p className="text-xs text-slate-500">
+          <h1 className="text-base font-bold text-slate-900 flex items-center gap-2">
+            <svg className="w-5 h-5 text-slate-700 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+              <line x1="16" y1="13" x2="8" y2="13" />
+              <line x1="16" y1="17" x2="8" y2="17" />
+            </svg>
+            <span>ยื่นใบลา / ขอทำ OT</span>
+          </h1>
+          <p className="text-xs text-slate-500 mt-0.5">
             ผู้ยื่นคำขอ: <span className="font-bold text-slate-800">{activeUser?.name}</span> ({activeUser?.emp_code})
           </p>
         </div>
 
         <div className="flex items-center gap-2">
           <span className="text-xs font-semibold text-slate-600 bg-slate-100 px-3 py-1.5 rounded-xl">
-            🏖️ ลาหยุด: ยื่นได้ 24 ชม.
+            ลาหยุด: ยื่นได้ 24 ชม.
           </span>
           <span
             className={`px-3 py-1.5 rounded-xl text-xs font-bold border flex items-center gap-1.5 ${
@@ -130,7 +138,7 @@ export default function SelfServicePage() {
                 : 'bg-rose-50 text-rose-800 border-rose-200'
             }`}
           >
-            <span>⏰ ขอ OT ก่อน 17:00 น.</span>
+            <span>ขอ OT ก่อน 17:00 น.</span>
           </span>
         </div>
       </div>
@@ -138,7 +146,7 @@ export default function SelfServicePage() {
       {/* 3 Live Leave Quota Cards */}
       <div className="grid grid-cols-3 gap-2.5">
         <div className="bg-white rounded-2xl p-3.5 border border-slate-200 shadow-xs">
-          <div className="text-[11px] font-bold text-slate-500">🤒 ลาป่วยคงเหลือ</div>
+          <div className="text-[11px] font-bold text-slate-500">ลาป่วยคงเหลือ</div>
           <div className="text-xl font-extrabold text-cyan-700 mt-1">
             {Math.max(0, quotaSick - usedSick)}{' '}
             <span className="text-xs font-semibold text-slate-400">/ {quotaSick} วัน</span>
@@ -147,7 +155,7 @@ export default function SelfServicePage() {
         </div>
 
         <div className="bg-white rounded-2xl p-3.5 border border-slate-200 shadow-xs">
-          <div className="text-[11px] font-bold text-slate-500">💼 ลากิจคงเหลือ</div>
+          <div className="text-[11px] font-bold text-slate-500">ลากิจคงเหลือ</div>
           <div className="text-xl font-extrabold text-amber-600 mt-1">
             {Math.max(0, quotaPersonal - usedPersonal)}{' '}
             <span className="text-xs font-semibold text-slate-400">/ {quotaPersonal} วัน</span>
@@ -156,7 +164,7 @@ export default function SelfServicePage() {
         </div>
 
         <div className="bg-white rounded-2xl p-3.5 border border-slate-200 shadow-xs">
-          <div className="text-[11px] font-bold text-slate-500">🌴 พักร้อนคงเหลือ</div>
+          <div className="text-[11px] font-bold text-slate-500">พักร้อนคงเหลือ</div>
           <div className="text-xl font-extrabold text-teal-700 mt-1">
             {Math.max(0, quotaAnnual - usedAnnual)}{' '}
             <span className="text-xs font-semibold text-slate-400">/ {quotaAnnual} วัน</span>
@@ -169,23 +177,30 @@ export default function SelfServicePage() {
       <div className="flex bg-slate-200/80 p-1 rounded-xl">
         <button
           onClick={() => setFormTab('leave')}
-          className={`flex-1 py-2 rounded-lg text-xs font-bold transition ${
+          className={`flex-1 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 ${
             formTab === 'leave'
               ? 'bg-white text-slate-900 shadow-xs'
               : 'text-slate-600 hover:text-slate-900'
           }`}
         >
-          🏖️ แบบฟอร์มขอลาหยุด (ยื่นได้ตลอด)
+          <svg className="w-4 h-4 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+          </svg>
+          <span>แบบฟอร์มขอลาหยุด (ยื่นได้ตลอด)</span>
         </button>
         <button
           onClick={() => setFormTab('ot')}
-          className={`flex-1 py-2 rounded-lg text-xs font-bold transition ${
+          className={`flex-1 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 ${
             formTab === 'ot'
               ? 'bg-white text-slate-900 shadow-xs'
               : 'text-slate-600 hover:text-slate-900'
           }`}
         >
-          ⏱️ แบบฟอร์มขอทำ OT (ก่อน 17:00 น.)
+          <svg className="w-4 h-4 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+          <span>แบบฟอร์มขอทำ OT (ก่อน 17:00 น.)</span>
         </button>
       </div>
 

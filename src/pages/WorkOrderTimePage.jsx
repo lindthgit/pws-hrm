@@ -158,8 +158,15 @@ export default function WorkOrderTimePage() {
       {/* Top Bar: Title, Branch Selector, Date Picker */}
       <div className="bg-white rounded-2xl p-3.5 border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-base font-bold text-slate-900">📋 ใบงาน/ลงเวลา</h1>
-          <p className="text-xs text-slate-500">{formatThaiDateFull(selectedDate)}</p>
+          <h1 className="text-base font-bold text-slate-900 flex items-center gap-2">
+            <svg className="w-5 h-5 text-slate-700 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+              <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+              <path d="m9 14 2 2 4-4" />
+            </svg>
+            <span>ใบงาน/ลงเวลา</span>
+          </h1>
+          <p className="text-xs text-slate-500 mt-0.5">{formatThaiDateFull(selectedDate)}</p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
@@ -197,23 +204,32 @@ export default function WorkOrderTimePage() {
       <div className="flex bg-slate-200/80 p-1 rounded-xl">
         <button
           onClick={() => setSubtab('workorders')}
-          className={`flex-1 py-2 rounded-lg text-xs font-bold transition ${
+          className={`flex-1 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 ${
             subtab === 'workorders'
               ? 'bg-white text-slate-900 shadow-xs'
               : 'text-slate-600 hover:text-slate-900'
           }`}
         >
-          📋 ใบงาน
+          <svg className="w-4 h-4 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+            <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+            <path d="m9 14 2 2 4-4" />
+          </svg>
+          <span>ใบงาน</span>
         </button>
         <button
           onClick={() => setSubtab('time')}
-          className={`flex-1 py-2 rounded-lg text-xs font-bold transition ${
+          className={`flex-1 py-2 rounded-lg text-xs font-bold transition flex items-center justify-center gap-1.5 ${
             subtab === 'time'
               ? 'bg-white text-slate-900 shadow-xs'
               : 'text-slate-600 hover:text-slate-900'
           }`}
         >
-          ⏰ ลงเวลา
+          <svg className="w-4 h-4 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+          <span>ลงเวลา</span>
         </button>
       </div>
 
@@ -255,15 +271,19 @@ export default function WorkOrderTimePage() {
                 }`}>
                   <span className="font-bold text-xs sm:text-sm text-slate-900 flex items-center gap-1.5">
                     <span className={`w-2 h-2 rounded-full ${isMyLeadTeam ? 'bg-[#0284c7] ring-2 ring-sky-300' : 'bg-[#0284c7]'}`}></span>
-                    👷 {team.name}
+                    {team.name}
                     {isMyLeadTeam && (
                       <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-[#0284c7] text-white shadow-xs ml-1">
                         ⭐ ทีมของคุณ
                       </span>
                     )}
                   </span>
-                  <span className="text-[11px] font-semibold text-[#0369a1] bg-white px-2 py-0.5 rounded-lg border border-cyan-200">
-                    📍 {team.site || 'ประจำออฟฟิศ'}
+                  <span className="text-[11px] font-semibold text-[#0369a1] bg-white px-2 py-0.5 rounded-lg border border-cyan-200 flex items-center gap-1">
+                    <svg className="w-3 h-3 text-[#0369a1]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                      <circle cx="12" cy="10" r="3" />
+                    </svg>
+                    <span>{team.site || 'ประจำออฟฟิศ'}</span>
                   </span>
                 </div>
 
@@ -308,8 +328,14 @@ export default function WorkOrderTimePage() {
                         {car && (
                           <div className="pt-2 border-t border-black/5 flex items-center justify-between gap-2">
                             <div className="min-w-0">
-                              <div className="text-xs font-bold text-slate-800 truncate">
-                                🚛 {car.name} ({car.plate})
+                              <div className="text-xs font-bold text-slate-800 truncate flex items-center gap-1.5">
+                                <svg className="w-3.5 h-3.5 text-slate-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <rect x="1" y="3" width="15" height="13" rx="1" />
+                                  <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+                                  <circle cx="5.5" cy="18.5" r="2.5" />
+                                  <circle cx="18.5" cy="18.5" r="2.5" />
+                                </svg>
+                                <span>{car.name} ({car.plate})</span>
                               </div>
                               <div className="text-[10px] text-slate-500">
                                 สถานะ:{' '}

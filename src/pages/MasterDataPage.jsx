@@ -117,25 +117,31 @@ export default function MasterDataPage() {
       {/* Header & Subtabs */}
       <div className="bg-white rounded-2xl p-3.5 border border-slate-200 shadow-sm flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-base font-bold text-slate-900">⚙️ ตั้งค่าระบบ & ข้อมูลหลัก (Master Data)</h1>
-          <p className="text-xs text-slate-500">ข้อมูลทั้งหมดเชื่อมต่อกับ Supabase แบบเรียลไทม์</p>
+          <h1 className="text-base font-bold text-slate-900 flex items-center gap-2">
+            <svg className="w-5 h-5 text-slate-700 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+            </svg>
+            <span>ตั้งค่าระบบ & ข้อมูลหลัก (Master Data)</span>
+          </h1>
+          <p className="text-xs text-slate-500 mt-0.5">ข้อมูลทั้งหมดเชื่อมต่อกับ Supabase แบบเรียลไทม์</p>
         </div>
 
         <div className="flex flex-wrap gap-1.5">
           {[
-            { id: 'employees', label: `👥 พนักงาน (${employees.length})` },
-            { id: 'teams', label: `👷 ทีมช่าง (${teams.length})` },
-            { id: 'vehicles', label: `🚛 รถ (${vehicles.length})` },
-            { id: 'sites', label: `📍 สาขา & หน้างาน` },
-            { id: 'permissions', label: `🔐 ตารางสิทธิ์ (5 Roles)` },
-            { id: 'audit', label: `📜 ประวัติการแก้ไข (${masterAuditLogs.length})` }
+            { id: 'employees', label: `พนักงาน (${employees.length})` },
+            { id: 'teams', label: `ทีมช่าง (${teams.length})` },
+            { id: 'vehicles', label: `รถ (${vehicles.length})` },
+            { id: 'sites', label: `สาขา & หน้างาน` },
+            { id: 'permissions', label: `ตารางสิทธิ์ (5 Roles)` },
+            { id: 'audit', label: `ประวัติการแก้ไข (${masterAuditLogs.length})` }
           ].map(t => (
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition ${
                 tab === t.id
-                  ? 'bg-gradient-to-r from-[#0284c7] to-[#0d9488] text-white shadow-xs'
+                  ? 'bg-[#0284c7] text-white shadow-xs font-bold'
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
             >
