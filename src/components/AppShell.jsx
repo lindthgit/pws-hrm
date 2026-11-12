@@ -332,7 +332,7 @@ export default function AppShell({ children }) {
           <div className="flex items-center gap-3">
             <div
               onClick={() => setActiveTab(visibleNavItems[0]?.id || 'profile')}
-              className="w-9 h-9 rounded-xl bg-[#0a1d30] border border-cyan-500/30 flex items-center justify-center p-1.5 shadow-xs cursor-pointer hover:border-cyan-400 transition"
+              className="w-9 h-9 rounded-xl overflow-hidden shadow-xs cursor-pointer border border-sky-400/40 hover:scale-105 transition flex items-center justify-center bg-[#0284c7]"
               title="PWS Operations"
             >
               <img src="/favicon.svg" alt="PWS Octopus Logo" className="w-full h-full object-contain" />
