@@ -21,6 +21,7 @@ export function AppProvider({ children }) {
   })
   const [dashboardFilter, setDashboardFilter] = useState('all') // 'all' | 'present' | 'leave' | 'absent'
   const [dashboardSubtab, setDashboardSubtab] = useState('tasks') // 'tasks' | 'people'
+  const [masterSubtab, setMasterSubtab] = useState('employees') // 'employees' | 'teams' | 'vehicles' | 'sites' | 'permissions' | 'audit'
   const [toastMessage, setToastMessage] = useState(null)
 
   // Live Supabase tables state (Initialized empty - 0% hardcoded data)
@@ -911,6 +912,8 @@ export function AppProvider({ children }) {
     setDashboardFilter,
     dashboardSubtab,
     setDashboardSubtab,
+    masterSubtab,
+    setMasterSubtab,
     toastMessage,
     showToast,
     officeSites,

@@ -17,10 +17,13 @@ export default function MasterDataPage() {
     upsertCustomerSite,
     upsertOfficeSite,
     toggleRolePermission,
-    updateRolePermission
+    updateRolePermission,
+    masterSubtab,
+    setMasterSubtab
   } = useApp()
 
-  const [tab, setTab] = useState('employees') // 'employees' | 'teams' | 'vehicles' | 'sites' | 'permissions' | 'audit'
+  const tab = masterSubtab || 'employees'
+  const setTab = setMasterSubtab || (() => {})
   const [empModal, setEmpModal] = useState(null)
   const [teamModal, setTeamModal] = useState(null)
   const [vehModal, setVehModal] = useState(null)

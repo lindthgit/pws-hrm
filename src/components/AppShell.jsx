@@ -130,11 +130,20 @@ export default function AppShell({ children }) {
     teams,
     employees,
     toastMessage,
-    canViewModule
+    canViewModule,
+    masterSubtab,
+    setMasterSubtab
   } = useApp()
 
   const [notifOpen, setNotifOpen] = useState(false)
   const [moreMenuOpen, setMoreMenuOpen] = useState(false)
+  const [lastReadAuditId, setLastReadAuditId] = useState(() => {
+    try {
+      return Number(localStorage.getItem('pws_last_read_audit_id')) || 0
+    } catch {
+      return 0
+    }
+  })
 
   // Role-based notification logic:
   // - Owner / HR: see pending leaves, pending OTs, and recent Master Data audit logs
@@ -143,12 +152,18 @@ export default function AppShell({ children }) {
   // - Worker: see their own recent requests
   let notifItems = []
   let notifBadgeCount = 0
+  let pendingApprovalsCount = 0
 
   if (effectiveRole === 'owner' || effectiveRole === 'hr') {
     const pendingLeaves = leaveRequests.filter(l => l.status === 'pending')
     const pendingOts = otRequests.filter(o => o.status === 'pending')
-    const recentAudits = (masterAuditLogs || []).slice(0, 10)
-    notifBadgeCount = pendingLeaves.length + pendingOts.length
+    pendingApprovalsCount = pendingLeaves.length + pendingOts.length
+
+    const recentAudits = (masterAuditLogs || []).slice(0, 15)
+    const unreadAudits = recentAudits.filter(l => Number(l.id) > lastReadAuditId)
+    const unreadAuditCount = unreadAudits.length
+
+    notifBadgeCount = pendingApprovalsCount + unreadAuditCount
     notifItems = [
       ...pendingLeaves.map(lv => ({
         id: `lv-${lv.id}`,
@@ -156,7 +171,8 @@ export default function AppShell({ children }) {
         title: `ขอ${lv.leave_type}: ${lv.worker_name}`,
         subtitle: `${formatThaiDateShort(lv.start_date)} (${lv.total_days} วัน) • ${lv.reason}`,
         actionHint: 'คลิกเพื่อไปหน้า วันลา & OT →',
-        targetTab: 'approvals'
+        targetTab: 'approvals',
+        isNew: true
       })),
       ...pendingOts.map(ot => ({
         id: `ot-${ot.id}`,
@@ -164,7 +180,8 @@ export default function AppShell({ children }) {
         title: `ขอ OT: ${ot.worker_name} (${ot.team_name})`,
         subtitle: `${formatThaiDateShort(ot.date_val)} • ${ot.hours_slot}`,
         actionHint: 'คลิกเพื่อไปหน้า วันลา & OT →',
-        targetTab: 'approvals'
+        targetTab: 'approvals',
+        isNew: true
       })),
       ...recentAudits.map(log => {
         let actionBadge = 'แก้ไข'
@@ -172,13 +189,17 @@ export default function AppShell({ children }) {
         if (log.action_type === 'create') actionBadge = 'เพิ่ม'
         if (log.action_type === 'permission_change') actionBadge = 'ปรับสิทธิ์'
 
+        const isUnread = Number(log.id) > lastReadAuditId
+
         return {
           id: `audit-${log.id}`,
           iconType: log.action_type === 'delete' ? 'trash' : log.action_type === 'permission_change' ? 'lock' : 'master',
           title: `[${actionBadge}] ${log.target_name}`,
           subtitle: `${log.details || ''} • โดย ${log.performed_by_name} (${log.performed_by_role})`,
           actionHint: 'คลิกเพื่อดูประวัติตั้งค่าระบบ →',
-          targetTab: 'master'
+          targetTab: 'master',
+          targetSubtab: 'audit',
+          isNew: isUnread
         }
       })
     ]
@@ -188,7 +209,8 @@ export default function AppShell({ children }) {
     )
     const branchLeaves = leaveRequests.filter(l => l.status === 'pending' && branchWorkerIds.has(l.worker_id))
     const branchOts = otRequests.filter(o => o.status === 'pending' && branchWorkerIds.has(o.worker_id))
-    notifBadgeCount = branchLeaves.length + branchOts.length
+    pendingApprovalsCount = branchLeaves.length + branchOts.length
+    notifBadgeCount = pendingApprovalsCount
     notifItems = [
       ...branchLeaves.map(lv => ({
         id: `lv-${lv.id}`,
@@ -213,7 +235,8 @@ export default function AppShell({ children }) {
     )
     const teamLeaves = leaveRequests.filter(l => l.status === 'pending' && teamWorkerIds.has(l.worker_id))
     const teamOts = otRequests.filter(o => o.status === 'pending' && teamWorkerIds.has(o.worker_id))
-    notifBadgeCount = teamLeaves.length + teamOts.length
+    pendingApprovalsCount = teamLeaves.length + teamOts.length
+    notifBadgeCount = pendingApprovalsCount
     notifItems = [
       ...teamLeaves.map(lv => ({
         id: `lv-${lv.id}`,
@@ -270,17 +293,17 @@ export default function AppShell({ children }) {
 
   const allNavItems = [
     { id: 'dashboard', label: 'ภาพรวม' },
-    { id: 'planner', label: 'วางแผนเดือน' },
     { id: 'clerk', label: 'ใบงาน/ลงเวลา' },
     { id: 'fleet', label: 'สถานะรถ' },
     {
       id: 'approvals',
       label: 'วันลา & OT',
-      badgeCount: (effectiveRole === 'owner' || effectiveRole === 'hr') ? notifBadgeCount : 0
+      badgeCount: pendingApprovalsCount
     },
+    { id: 'planner', label: 'วางแผนเดือน' },
     { id: 'selfservice', label: 'ยื่นใบลา / OT' },
-    { id: 'master', label: 'ตั้งค่าระบบ' },
-    { id: 'profile', label: 'ข้อมูลส่วนตัว' }
+    { id: 'profile', label: 'ข้อมูลส่วนตัว' },
+    { id: 'master', label: 'ตั้งค่าระบบ' }
   ]
 
   const visibleNavItems = allNavItems.filter(item => canViewModule(item.id, effectiveRole))
@@ -310,9 +333,28 @@ export default function AppShell({ children }) {
 
   const isMoreTabActive = hasMoreMenu && mobileMoreItems.some(item => item.id === activeTab)
 
-  function handleNotifItemClick(targetTab) {
+  function handleNotifItemClick(targetTab, targetSubtab) {
     setNotifOpen(false)
-    if (targetTab) setActiveTab(targetTab)
+    if (targetTab) {
+      setActiveTab(targetTab)
+      if (targetTab === 'master' && targetSubtab && setMasterSubtab) {
+        setMasterSubtab(targetSubtab)
+      }
+    }
+  }
+
+  function handleToggleNotif() {
+    const nextState = !notifOpen
+    setNotifOpen(nextState)
+    if (nextState && masterAuditLogs && masterAuditLogs.length > 0) {
+      const maxId = Math.max(...masterAuditLogs.map(l => Number(l.id) || 0))
+      if (maxId > lastReadAuditId) {
+        setLastReadAuditId(maxId)
+        try {
+          localStorage.setItem('pws_last_read_audit_id', String(maxId))
+        } catch {}
+      }
+    }
   }
 
   function handleSelectMobileTab(tabId) {
@@ -359,7 +401,7 @@ export default function AppShell({ children }) {
             {/* Notification Bell */}
             <div className="relative">
               <button
-                onClick={() => setNotifOpen(!notifOpen)}
+                onClick={handleToggleNotif}
                 className="relative p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition"
                 title="การแจ้งเตือน"
               >
@@ -376,7 +418,7 @@ export default function AppShell({ children }) {
                   <div className="px-4 py-3 bg-slate-900 text-white flex items-center justify-between">
                     <span className="text-xs font-bold flex items-center gap-2">
                       <NavIcon name="bell" className="w-4 h-4 text-cyan-400" />
-                      การแจ้งเตือน {notifBadgeCount > 0 ? `(${notifBadgeCount} รายการรออนุมัติ)` : ''}
+                      การแจ้งเตือน {notifBadgeCount > 0 ? `(${notifBadgeCount} รายการใหม่)` : ''}
                     </span>
                     <button
                       onClick={() => setNotifOpen(false)}
@@ -394,15 +436,22 @@ export default function AppShell({ children }) {
                       notifItems.map(item => (
                         <button
                           key={item.id}
-                          onClick={() => handleNotifItemClick(item.targetTab)}
+                          onClick={() => handleNotifItemClick(item.targetTab, item.targetSubtab)}
                           className="w-full text-left p-3 hover:bg-cyan-50/70 transition flex items-start gap-2.5"
                         >
                           <span className="w-7 h-7 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center shrink-0">
                             <NavIcon name={item.iconType || 'bell'} className="w-4 h-4 text-slate-600" />
                           </span>
                           <div className="min-w-0 flex-1">
-                            <div className="text-xs font-bold text-slate-800 truncate">
-                              {item.title}
+                            <div className="flex items-center justify-between gap-1.5">
+                              <span className="text-xs font-bold text-slate-800 truncate">
+                                {item.title}
+                              </span>
+                              {item.isNew && (
+                                <span className="px-1.5 py-0.2 bg-sky-100 text-[#0284c7] font-bold text-[9px] rounded-full shrink-0">
+                                  ใหม่
+                                </span>
+                              )}
                             </div>
                             <div className="text-[11px] text-slate-500 line-clamp-2 mt-0.5">
                               {item.subtitle}
