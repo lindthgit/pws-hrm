@@ -6,7 +6,7 @@ import { useAuth } from './AuthContext'
 const AppContext = createContext(null)
 
 export function AppProvider({ children }) {
-  const { activeUser, effectiveRole } = useAuth()
+  const { activeUser, effectiveRole, updateUserData } = useAuth()
 
   // Real-time date sync on app startup
   const [selectedDate, setSelectedDateState] = useState(() => getTodayISO())
@@ -652,6 +652,19 @@ export function AppProvider({ children }) {
       showToast('บันทึกข้อมูลพนักงานไม่สำเร็จ: ' + error.message, 'error')
       return false
     }
+
+    // Sync updated name across all related tables in Supabase and active session
+    if (existing && existing.name !== empPayload.name) {
+      await Promise.allSettled([
+        supabase.from('leave_requests').update({ worker_name: empPayload.name }).eq('worker_id', empPayload.id),
+        supabase.from('ot_requests').update({ worker_name: empPayload.name }).eq('worker_id', empPayload.id),
+        supabase.from('schedule_assignments').update({ worker_name: empPayload.name }).eq('worker_id', empPayload.id),
+        supabase.from('teams').update({ lead: empPayload.name }).eq('lead', existing.name),
+        supabase.from('vehicles').update({ driver: empPayload.name }).eq('driver', existing.name)
+      ])
+      if (updateUserData) updateUserData(empPayload)
+    }
+
     await logMasterChange({
       actionType: isNew ? 'create' : 'update',
       entityType: 'employee',
@@ -664,7 +677,7 @@ export function AppProvider({ children }) {
     await fetchAllData(true)
     showToast('บันทึกข้อมูลพนักงานลงฐานข้อมูลเรียบร้อย')
     return true
-  }, [allAccounts, logMasterChange, fetchAllData, showToast])
+  }, [allAccounts, logMasterChange, fetchAllData, showToast, updateUserData])
 
   const deleteEmployee = useCallback(async (empId, empName) => {
     const emp = allAccounts.find(e => e.id === empId)

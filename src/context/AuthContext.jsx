@@ -117,6 +117,12 @@ export function AuthProvider({ children }) {
     localStorage.setItem(STORAGE_KEY_DEV_IMPERSONATE, targetEmployee.id)
   }
 
+  function updateUserData(updatedEmp) {
+    if (!updatedEmp) return
+    setLoggedUser(prev => (prev?.id === updatedEmp.id ? { ...prev, ...updatedEmp } : prev))
+    setImpersonatedUser(prev => (prev?.id === updatedEmp.id ? { ...prev, ...updatedEmp } : prev))
+  }
+
   // Effective user whose role & identity govern the UI
   const activeUser = loggedUser?.is_developer
     ? (impersonatedUser || loggedUser)
@@ -140,7 +146,8 @@ export function AuthProvider({ children }) {
     setAuthError,
     login,
     logout,
-    switchDeveloperImpersonation
+    switchDeveloperImpersonation,
+    updateUserData
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

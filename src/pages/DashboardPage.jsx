@@ -386,12 +386,19 @@ export default function DashboardPage() {
                             <div className="flex items-center justify-between">
                               {isConfirmed ? (
                                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-extrabold border border-emerald-300">
-                                  <span>✓ เสมียนคอนเฟิร์มแล้ว</span>
+                                  <svg className="w-3 h-3 text-emerald-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <polyline points="20 6 9 17 4 12" />
+                                  </svg>
+                                  <span>เสมียนคอนเฟิร์มแล้ว</span>
                                   <span>({dispatch.clerk_name || 'เสมียน'} {dispatch.confirmed_time || ''})</span>
                                 </span>
                               ) : (
                                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-extrabold border border-amber-300">
-                                  <span>⏳ รอเสมียนคอนเฟิร์ม</span>
+                                  <svg className="w-3 h-3 text-amber-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <polyline points="12 6 12 12 16 14" />
+                                  </svg>
+                                  <span>รอเสมียนคอนเฟิร์ม</span>
                                 </span>
                               )}
 

@@ -361,9 +361,15 @@ export default function WorkOrderTimePage() {
                                         destText: grp.taskDesc
                                       })
                                     }
-                                    className="px-3 py-1.5 rounded-xl bg-cyan-700 hover:bg-cyan-800 text-white text-xs font-bold shadow-xs transition"
+                                    className="px-3 py-1.5 rounded-xl bg-[#0284c7] hover:bg-[#0369a1] text-white text-xs font-bold shadow-xs transition flex items-center gap-1.5"
                                   >
-                                    ใช้งาน
+                                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                      <rect x="1" y="3" width="15" height="13" rx="1" />
+                                      <polygon points="16 8 20 8 23 11 23 16 16 16 8" />
+                                      <circle cx="5.5" cy="18.5" r="2.5" />
+                                      <circle cx="18.5" cy="18.5" r="2.5" />
+                                    </svg>
+                                    <span>ใช้งานรถ</span>
                                   </button>
                                 ) : (
                                   <button
@@ -374,9 +380,13 @@ export default function WorkOrderTimePage() {
                                         destText: 'ประจำออฟฟิศ'
                                       })
                                     }
-                                    className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition"
+                                    className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-xs transition flex items-center gap-1.5"
                                   >
-                                    คืนรถ
+                                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                      <polyline points="9 14 4 9 9 4" />
+                                      <path d="M20 20v-7a4 4 0 0 0-4-4H4" />
+                                    </svg>
+                                    <span>คืนรถ</span>
                                   </button>
                                 )}
                               </div>
@@ -406,25 +416,51 @@ export default function WorkOrderTimePage() {
                             <div className="flex items-center justify-between gap-2">
                               {isConfirmed ? (
                                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-extrabold border border-emerald-300">
-                                  <span>✓ เสมียนคอนเฟิร์มแล้ว</span>
+                                  <svg className="w-3 h-3 text-emerald-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <polyline points="20 6 9 17 4 12" />
+                                  </svg>
+                                  <span>เสมียนคอนเฟิร์มแล้ว</span>
                                   <span>({dispatch.clerk_name || 'เสมียน'} {dispatch.confirmed_time || ''})</span>
                                 </span>
                               ) : (
                                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-extrabold border border-amber-300">
-                                  <span>⏳ รอเสมียนคอนเฟิร์ม</span>
+                                  <svg className="w-3 h-3 text-amber-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                    <circle cx="12" cy="12" r="10" />
+                                    <polyline points="12 6 12 12 16 14" />
+                                  </svg>
+                                  <span>รอเสมียนคอนเฟิร์ม</span>
                                 </span>
                               )}
 
                               {canConfirmWorkOrder && (
                                 <button
                                   onClick={() => openConfirmModal(team, grp, dispatch)}
-                                  className={`px-3 py-1 rounded-xl text-xs font-bold shadow-xs transition ${
+                                  className={`px-3 py-1.5 rounded-xl text-xs font-bold shadow-xs transition flex items-center gap-1.5 ${
                                     isConfirmed
                                       ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300'
-                                      : 'bg-gradient-to-r from-[#0284c7] to-[#0d9488] text-white hover:opacity-95'
+                                      : 'bg-[#0284c7] hover:bg-[#0369a1] text-white'
                                   }`}
                                 >
-                                  {isConfirmed ? '✏️ แก้ไขข้อความ' : '📝 คอนเฟิร์มใบงาน'}
+                                  {isConfirmed ? (
+                                    <>
+                                      <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M12 20h9" />
+                                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                                      </svg>
+                                      <span>แก้ไขข้อความ</span>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                        <polyline points="14 2 14 8 20 8" />
+                                        <line x1="16" y1="13" x2="8" y2="13" />
+                                        <line x1="16" y1="17" x2="8" y2="17" />
+                                        <polyline points="10 9 9 9 8 9" />
+                                      </svg>
+                                      <span>คอนเฟิร์มใบงาน</span>
+                                    </>
+                                  )}
                                 </button>
                               )}
                             </div>
@@ -528,64 +564,97 @@ export default function WorkOrderTimePage() {
 
                   {/* Right: Independent Punch-In and Punch-Out Controls */}
                   {approvedLeave ? (
-                    <div className="px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs font-bold shrink-0">
-                      🏖️ {approvedLeave.leave_type} ({approvedLeave.reason})
+                    <div className="px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs font-bold shrink-0 flex items-center gap-1.5">
+                      <svg className="w-3.5 h-3.5 text-amber-700 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="12" y1="2" x2="12" y2="22" />
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                      </svg>
+                      <span>{approvedLeave.leave_type} ({approvedLeave.reason})</span>
                     </div>
                   ) : canRecordTime ? (
-                    <div className="flex items-center gap-2 shrink-0 flex-wrap">
-                      {/* Independent Punch In */}
-                      <div className="flex items-center bg-slate-50 border border-slate-200 rounded-xl p-1 gap-1">
-                        <span className="text-[10px] font-bold text-slate-500 pl-1">เข้า:</span>
-                        <input
-                          type="time"
-                          value={inVal}
-                          onChange={e => setDraftTime(worker.id, 'in', e.target.value)}
-                          className="bg-white border border-slate-200 rounded-lg px-1.5 py-0.5 text-xs font-bold text-slate-800 w-[78px]"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => handleSaveInTime(worker)}
-                          className={`px-2 py-1 rounded-lg text-[10px] font-bold transition ${
-                            punch?.punch_in
-                              ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200'
-                              : 'bg-cyan-700 text-white hover:bg-cyan-800'
-                          }`}
-                        >
-                          {punch?.punch_in ? '✓ เข้า' : 'บันทึกเข้า'}
-                        </button>
+                    <div className="flex flex-col items-end gap-1 shrink-0">
+                      <div className="flex items-center gap-2 flex-wrap justify-end">
+                        {/* Independent Punch In */}
+                        <div className="flex items-center bg-slate-50 border border-slate-200 rounded-xl p-1 gap-1">
+                          <span className="text-[10px] font-bold text-slate-500 pl-1">เข้า:</span>
+                          <input
+                            type="time"
+                            value={inVal}
+                            disabled={Boolean(punch?.punch_in)}
+                            onChange={e => setDraftTime(worker.id, 'in', e.target.value)}
+                            className={`border border-slate-200 rounded-lg px-1.5 py-0.5 text-xs font-bold w-[78px] ${
+                              punch?.punch_in
+                                ? 'bg-slate-100 text-slate-500 cursor-not-allowed'
+                                : 'bg-white text-slate-800'
+                            }`}
+                          />
+                          <button
+                            type="button"
+                            disabled={Boolean(punch?.punch_in)}
+                            onClick={() => handleSaveInTime(worker)}
+                            className={`px-2 py-1 rounded-lg text-[10px] font-bold transition flex items-center gap-1 ${
+                              punch?.punch_in
+                                ? 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed'
+                                : 'bg-[#0284c7] hover:bg-[#0369a1] text-white shadow-xs'
+                            }`}
+                          >
+                            {punch?.punch_in ? '✓ บันทึกแล้ว' : 'บันทึกเข้า'}
+                          </button>
+                        </div>
+
+                        {/* Independent Punch Out */}
+                        <div className="flex items-center bg-slate-50 border border-slate-200 rounded-xl p-1 gap-1">
+                          <span className="text-[10px] font-bold text-slate-500 pl-1">ออก:</span>
+                          <input
+                            type="time"
+                            value={outVal}
+                            disabled={Boolean(punch?.punch_out)}
+                            onChange={e => setDraftTime(worker.id, 'out', e.target.value)}
+                            className={`border border-slate-200 rounded-lg px-1.5 py-0.5 text-xs font-bold w-[78px] ${
+                              punch?.punch_out
+                                ? 'bg-slate-100 text-slate-500 cursor-not-allowed'
+                                : 'bg-white text-slate-800'
+                            }`}
+                          />
+                          <button
+                            type="button"
+                            disabled={Boolean(punch?.punch_out)}
+                            onClick={() => handleSaveOutTime(worker)}
+                            className={`px-2 py-1 rounded-lg text-[10px] font-bold transition flex items-center gap-1 ${
+                              punch?.punch_out
+                                ? 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed'
+                                : 'bg-slate-800 hover:bg-slate-700 text-white shadow-xs'
+                            }`}
+                          >
+                            {punch?.punch_out ? '✓ บันทึกแล้ว' : 'บันทึกออก'}
+                          </button>
+                        </div>
                       </div>
 
-                      {/* Independent Punch Out */}
-                      <div className="flex items-center bg-slate-50 border border-slate-200 rounded-xl p-1 gap-1">
-                        <span className="text-[10px] font-bold text-slate-500 pl-1">ออก:</span>
-                        <input
-                          type="time"
-                          value={outVal}
-                          onChange={e => setDraftTime(worker.id, 'out', e.target.value)}
-                          className="bg-white border border-slate-200 rounded-lg px-1.5 py-0.5 text-xs font-bold text-slate-800 w-[78px]"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => handleSaveOutTime(worker)}
-                          className={`px-2 py-1 rounded-lg text-[10px] font-bold transition ${
-                            punch?.punch_out
-                              ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200'
-                              : 'bg-slate-800 text-white hover:bg-slate-700'
-                          }`}
-                        >
-                          {punch?.punch_out ? '✓ ออก' : 'บันทึกออก'}
-                        </button>
-                      </div>
+                      {/* Small Clerk Attribution Tag */}
+                      {punch?.recorded_by && (
+                        <div className="text-[10px] text-slate-400 font-medium pr-1">
+                          บันทึกโดย: <span className="font-semibold text-slate-600">{punch.recorded_by}</span>
+                        </div>
+                      )}
                     </div>
                   ) : (
                     /* View-Only for Owner / Lead */
-                    <div className="flex items-center gap-2 text-xs font-bold shrink-0">
-                      <span className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700">
-                        เข้า: {punch?.punch_in || '--:--'}
-                      </span>
-                      <span className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700">
-                        ออก: {punch?.punch_out || '--:--'}
-                      </span>
+                    <div className="flex flex-col items-end gap-0.5 text-xs font-bold shrink-0">
+                      <div className="flex items-center gap-2">
+                        <span className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700">
+                          เข้า: {punch?.punch_in || '--:--'}
+                        </span>
+                        <span className="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700">
+                          ออก: {punch?.punch_out || '--:--'}
+                        </span>
+                      </div>
+                      {punch?.recorded_by && (
+                        <span className="text-[10px] text-slate-400 font-normal">
+                          บันทึกโดย: {punch.recorded_by}
+                        </span>
+                      )}
                     </div>
                   )}
                 </div>
@@ -599,10 +668,18 @@ export default function WorkOrderTimePage() {
       {confirmModal && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden">
-            <div className="px-5 py-4 bg-gradient-to-r from-[#0284c7] to-[#0d9488] text-white flex items-center justify-between">
+            <div className="px-5 py-4 bg-slate-900 text-white flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-bold">📋 คอนเฟิร์มใบงาน — {confirmModal.team.name}</h3>
-                <p className="text-[11px] text-cyan-100">{formatThaiDateFull(selectedDate)}</p>
+                <h3 className="text-sm font-bold flex items-center gap-2">
+                  <svg className="w-4 h-4 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                    <line x1="16" y1="13" x2="8" y2="13" />
+                    <line x1="16" y1="17" x2="8" y2="17" />
+                  </svg>
+                  <span>คอนเฟิร์มใบงาน — {confirmModal.team.name}</span>
+                </h3>
+                <p className="text-[11px] text-slate-300">{formatThaiDateFull(selectedDate)}</p>
               </div>
               <button
                 onClick={() => setConfirmModal(null)}
@@ -627,7 +704,7 @@ export default function WorkOrderTimePage() {
                   value={modalRemark}
                   onChange={e => setModalRemark(e.target.value)}
                   placeholder="เช่น ช่างออกเดินทางแล้ว 08:30 น. / เบิกเครื่องมือตรวจรับครบถ้วน / เตรียมของขึ้นรถเรียบร้อย..."
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-[#0284c7]"
                 />
               </div>
 
@@ -637,9 +714,13 @@ export default function WorkOrderTimePage() {
                     type="button"
                     onClick={handleUnconfirm}
                     disabled={savingConfirm}
-                    className="px-3 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold transition"
+                    className="px-3 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold transition flex items-center gap-1.5"
                   >
-                    ✕ ยกเลิกคอนเฟิร์ม
+                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <line x1="18" y1="6" x2="6" y2="18" />
+                      <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                    <span>ยกเลิกคอนเฟิร์ม</span>
                   </button>
                 ) : (
                   <div></div>
@@ -649,16 +730,19 @@ export default function WorkOrderTimePage() {
                   <button
                     type="button"
                     onClick={() => setConfirmModal(null)}
-                    className="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 text-xs font-bold"
+                    className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition"
                   >
                     ปิด
                   </button>
                   <button
                     type="submit"
                     disabled={savingConfirm}
-                    className="px-5 py-2 rounded-xl bg-gradient-to-r from-[#0284c7] to-[#0d9488] text-white text-xs font-bold shadow-md hover:opacity-95 transition disabled:opacity-50"
+                    className="px-5 py-2 rounded-xl bg-[#0284c7] hover:bg-[#0369a1] text-white text-xs font-bold shadow-md transition disabled:opacity-50 flex items-center gap-1.5"
                   >
-                    {savingConfirm ? 'กำลังบันทึก...' : '✓ ยืนยันคอนเฟิร์มใบงาน'}
+                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    <span>{savingConfirm ? 'กำลังบันทึก...' : 'ยืนยันคอนเฟิร์มใบงาน'}</span>
                   </button>
                 </div>
               </div>

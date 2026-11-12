@@ -207,7 +207,10 @@ export default function SelfServicePage() {
       {/* Warning if OT is locked after 17:00 (shown ONLY on OT tab, without developer hint) */}
       {formTab === 'ot' && isOtLocked && (
         <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold flex items-center gap-2">
-          <span>🔒</span>
+          <svg className="w-4 h-4 shrink-0 text-rose-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+          </svg>
           <span>
             ขณะนี้เลยเวลา 17:00 น. แล้ว ระบบปิดรับคำขอทำ OT สำหรับวันนี้ กรุณาติดต่อเสมียนสาขาหรือฝ่ายบุคคล
           </span>
@@ -221,7 +224,13 @@ export default function SelfServicePage() {
           className="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4"
         >
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-bold text-slate-900">🏖️ กรอกรายละเอียดการลาหยุด</h2>
+            <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+              <svg className="w-4 h-4 text-[#0284c7]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+              </svg>
+              <span>กรอกรายละเอียดการลาหยุด</span>
+            </h2>
             <span className="text-[11px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded font-bold">
               ✓ ยื่นได้ตลอดเวลา
             </span>
@@ -392,7 +401,17 @@ export default function SelfServicePage() {
       {/* My Submitted Requests Status List */}
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="px-4 py-3 bg-slate-50 border-b border-slate-200">
-          <h3 className="text-xs font-bold text-slate-800">📌 สถานะคำขอของฉัน</h3>
+          <h3 className="text-xs font-bold text-slate-800 flex items-center gap-2">
+            <svg className="w-3.5 h-3.5 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="8" y1="6" x2="21" y2="6" />
+              <line x1="8" y1="12" x2="21" y2="12" />
+              <line x1="8" y1="18" x2="21" y2="18" />
+              <line x1="3" y1="6" x2="3.01" y2="6" />
+              <line x1="3" y1="12" x2="3.01" y2="12" />
+              <line x1="3" y1="18" x2="3.01" y2="18" />
+            </svg>
+            <span>สถานะคำขอของฉัน</span>
+          </h3>
         </div>
         <div className="divide-y divide-slate-100">
           {myRecentLeaves.length === 0 && myRecentOts.length === 0 ? (
@@ -415,7 +434,19 @@ export default function SelfServicePage() {
                         : 'bg-amber-100 text-amber-800'
                     }`}
                   >
-                    {lv.status === 'approved' ? '✓ อนุมัติแล้ว' : lv.status === 'rejected' ? '✕ ไม่อนุมัติ' : '⏳ รออนุมัติ'}
+                    {lv.status === 'approved' ? (
+                      '✓ อนุมัติแล้ว'
+                    ) : lv.status === 'rejected' ? (
+                      '✕ ไม่อนุมัติ'
+                    ) : (
+                      <span className="inline-flex items-center gap-1">
+                        <svg className="w-2.5 h-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <circle cx="12" cy="12" r="10"/>
+                          <polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                        <span>รออนุมัติ</span>
+                      </span>
+                    )}
                   </span>
                 </div>
               ))}
@@ -435,7 +466,19 @@ export default function SelfServicePage() {
                         : 'bg-amber-100 text-amber-800'
                     }`}
                   >
-                    {ot.status === 'approved' ? '✓ อนุมัติแล้ว' : ot.status === 'rejected' ? '✕ ไม่อนุมัติ' : '⏳ รออนุมัติ'}
+                    {ot.status === 'approved' ? (
+                      '✓ อนุมัติแล้ว'
+                    ) : ot.status === 'rejected' ? (
+                      '✕ ไม่อนุมัติ'
+                    ) : (
+                      <span className="inline-flex items-center gap-1">
+                        <svg className="w-2.5 h-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <circle cx="12" cy="12" r="10"/>
+                          <polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                        <span>รออนุมัติ</span>
+                      </span>
+                    )}
                   </span>
                 </div>
               ))}

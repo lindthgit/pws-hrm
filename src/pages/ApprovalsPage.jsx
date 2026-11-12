@@ -71,6 +71,8 @@ export default function ApprovalsPage() {
   const pendingOts = otRequests.filter(o => o.status === 'pending')
   const processedOts = otRequests.filter(o => o.status !== 'pending')
 
+  const getWorkerName = (id, fallback) => employees.find(e => e.id === id)?.name || fallback
+
   function handleChangeOtTeam(newTeamId) {
     setOtTeamId(newTeamId)
     const members = employees.filter(e => e.team_id === newTeamId)
@@ -344,7 +346,7 @@ export default function ApprovalsPage() {
                           {lv.leave_type}
                         </span>
                         <span className="font-bold text-slate-900 text-sm">
-                          {lv.worker_name}
+                          {getWorkerName(lv.worker_id, lv.worker_name)}
                         </span>
                         <span className="text-xs text-slate-400">({lv.worker_code})</span>
                       </div>
@@ -403,7 +405,7 @@ export default function ApprovalsPage() {
                   >
                     <div>
                       <div className="text-xs font-bold text-slate-800 flex items-center gap-2">
-                        <span>{lv.worker_name}</span>
+                        <span>{getWorkerName(lv.worker_id, lv.worker_name)}</span>
                         <span className="text-slate-500 font-normal">({lv.leave_type})</span>
                         <span className="text-slate-600">
                           {formatThaiDateShort(lv.start_date)} - {formatThaiDateShort(lv.end_date)} ({lv.total_days} วัน)
@@ -459,7 +461,7 @@ export default function ApprovalsPage() {
                           OT {ot.ot_hours || 4.5} ชม.
                         </span>
                         <span className="font-bold text-slate-900 text-sm">
-                          {ot.worker_name}
+                          {getWorkerName(ot.worker_id, ot.worker_name)}
                         </span>
                         <span className="text-xs text-slate-500">({ot.team_name})</span>
                       </div>
@@ -514,7 +516,7 @@ export default function ApprovalsPage() {
                   >
                     <div>
                       <div className="text-xs font-bold text-slate-800 flex items-center gap-2">
-                        <span>{ot.worker_name} ({ot.team_name})</span>
+                        <span>{getWorkerName(ot.worker_id, ot.worker_name)} ({ot.team_name})</span>
                         <span className="text-purple-700">{ot.hours_slot}</span>
                       </div>
                       <div className="text-[11px] text-slate-500">
@@ -746,12 +748,12 @@ export default function ApprovalsPage() {
                               e.stopPropagation()
                               setLeaveDetailModal(lv)
                             }}
-                            title={`${lv.worker_name} (${lv.leave_type}): ${lv.reason || 'ไม่มีระบุ'}`}
+                            title={`${getWorkerName(lv.worker_id, lv.worker_name)} (${lv.leave_type}): ${lv.reason || 'ไม่มีระบุ'}`}
                             className={`px-1.5 py-0.5 rounded-md text-[10px] font-bold border truncate transition hover:scale-[1.02] ${badgeColor} ${
                               isPending ? 'border-dashed border-amber-400' : ''
                             }`}
                           >
-                            <span>{icon} {lv.worker_name}</span>
+                            <span>{icon} {getWorkerName(lv.worker_id, lv.worker_name)}</span>
                             {isPending && <span className="ml-1 text-amber-700">⏳</span>}
                           </div>
                         )
@@ -812,7 +814,7 @@ export default function ApprovalsPage() {
                           >
                             {lv.leave_type}
                           </span>
-                          <span className="font-bold text-slate-900 text-xs">{lv.worker_name}</span>
+                          <span className="font-bold text-slate-900 text-xs">{getWorkerName(lv.worker_id, lv.worker_name)}</span>
                           <span className="text-[11px] text-slate-500">
                             ({tm?.name || emp?.job_title || 'พนักงาน'})
                           </span>
@@ -1092,10 +1094,15 @@ export default function ApprovalsPage() {
       {leaveDetailModal && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden">
-            <div className="px-5 py-4 bg-gradient-to-r from-[#0284c7] to-[#0d9488] text-white flex items-center justify-between">
+            <div className="px-5 py-4 bg-slate-900 text-white flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-bold">🏖️ รายละเอียดวันลา</h3>
-                <p className="text-[11px] text-cyan-100">{leaveDetailModal.worker_name}</p>
+                <h3 className="text-sm font-bold flex items-center gap-2">
+                  <svg className="w-4 h-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  รายละเอียดวันลา
+                </h3>
+                <p className="text-[11px] text-slate-300">{getWorkerName(leaveDetailModal.worker_id, leaveDetailModal.worker_name)}</p>
               </div>
               <button
                 onClick={() => setLeaveDetailModal(null)}
@@ -1108,7 +1115,7 @@ export default function ApprovalsPage() {
             <div className="p-5 space-y-3.5 text-xs">
               <div className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-200">
                 <div>
-                  <div className="font-bold text-slate-900 text-sm">{leaveDetailModal.worker_name}</div>
+                  <div className="font-bold text-slate-900 text-sm">{getWorkerName(leaveDetailModal.worker_id, leaveDetailModal.worker_name)}</div>
                   <div className="text-[11px] text-slate-500 mt-0.5">
                     {employees.find(e => e.id === leaveDetailModal.worker_id)?.job_title || 'พนักงาน'}
                   </div>

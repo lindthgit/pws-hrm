@@ -269,9 +269,14 @@ export default function PlannerPage() {
         <div className="flex items-center gap-1.5">
           <button
             onClick={() => setRevModalOpen(true)}
-            className="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold flex items-center gap-1 transition border border-slate-200"
+            className="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold flex items-center gap-1.5 transition border border-slate-200"
           >
-            <span>💾 บันทึกแผน ({latestRevision ? latestRevision.version_code : 'v1'})</span>
+            <svg className="w-3.5 h-3.5 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+              <polyline points="17 21 17 13 7 13 7 21"/>
+              <polyline points="7 3 7 8 15 8"/>
+            </svg>
+            <span>บันทึกแผน ({latestRevision ? latestRevision.version_code : 'v1'})</span>
           </button>
 
           <button
@@ -281,7 +286,10 @@ export default function PlannerPage() {
             }}
             className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold flex items-center gap-1.5 shadow-sm transition"
           >
-            <span>💬 ส่ง LINE</span>
+            <svg className="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            </svg>
+            <span>ส่ง LINE</span>
           </button>
         </div>
       </div>
@@ -393,7 +401,7 @@ export default function PlannerPage() {
                         className="sticky left-0 z-10 bg-slate-200 hover:bg-cyan-100 px-3 py-1.5 font-extrabold text-slate-900 border-r border-slate-300 cursor-pointer flex items-center justify-between"
                         title="คลิกเพื่อสั่งงานรายทีม"
                       >
-                        <span>👷 {team.name}</span>
+                        <span>{team.name}</span>
                         <span className="text-[10px] px-1.5 py-0.5 rounded bg-white text-slate-700 font-bold">
                           +สั่งงาน
                         </span>
@@ -451,8 +459,9 @@ export default function PlannerPage() {
                                 }`}
                               >
                                 {lv ? (
-                                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-200/80 text-amber-900 font-bold">
-                                    🏖️ {lv.leave_type}
+                                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-200/80 text-amber-900 font-bold inline-flex items-center gap-1">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-amber-600"></span>
+                                    <span>{lv.leave_type}</span>
                                   </span>
                                 ) : (
                                   <span className="text-[10px] text-slate-300 opacity-0 hover:opacity-100">+</span>
@@ -480,7 +489,15 @@ export default function PlannerPage() {
                                 </div>
                                 <div className="flex items-center justify-between gap-1 mt-1 pt-1 border-t border-black/5 text-[10px] opacity-85">
                                   {car ? (
-                                    <span className="font-semibold truncate">🚛 {car.name}</span>
+                                    <span className="font-semibold truncate flex items-center gap-1">
+                                      <svg className="w-3 h-3 text-slate-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                        <rect x="1" y="3" width="15" height="13" rx="1" />
+                                        <polygon points="16 8 20 8 23 11 23 16 16 16 8" />
+                                        <circle cx="5.5" cy="18.5" r="2.5" />
+                                        <circle cx="18.5" cy="18.5" r="2.5" />
+                                      </svg>
+                                      <span>{car.name}</span>
+                                    </span>
                                   ) : (
                                     <span></span>
                                   )}
@@ -510,8 +527,12 @@ export default function PlannerPage() {
           <div className="bg-white rounded-3xl max-w-lg w-full shadow-2xl border border-slate-200 overflow-hidden">
             <div className="px-5 py-4 bg-slate-900 text-white flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-bold">
-                  📋 สั่งงาน / แก้ไขแผน — {editModal.team.name}
+                <h3 className="text-sm font-bold flex items-center gap-2">
+                  <svg className="w-4 h-4 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+                  </svg>
+                  <span>สั่งงาน / แก้ไขแผน — {editModal.team.name}</span>
                 </h3>
                 <p className="text-[11px] text-slate-300 mt-0.5">
                   วันที่ {formatThaiDateFull(editModal.dateIso)}
@@ -653,24 +674,33 @@ export default function PlannerPage() {
                   type="button"
                   onClick={handleClearAssignment}
                   disabled={saving}
-                  className="px-3.5 py-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold transition"
+                  className="px-3.5 py-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold transition flex items-center gap-1.5"
                 >
-                  🗑️ ล้างงานในช่องนี้
+                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="3 6 5 6 21 6" />
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                  </svg>
+                  <span>ล้างงานในช่องนี้</span>
                 </button>
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
                     onClick={() => setEditModal(null)}
-                    className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold"
+                    className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition"
                   >
                     ยกเลิก
                   </button>
                   <button
                     type="submit"
                     disabled={saving}
-                    className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#0284c7] to-[#0d9488] text-white text-xs font-bold shadow-md hover:opacity-95 disabled:opacity-50"
+                    className="px-5 py-2.5 rounded-xl bg-[#0284c7] hover:bg-[#0369a1] text-white text-xs font-bold shadow-md transition disabled:opacity-50 flex items-center gap-1.5"
                   >
-                    {saving ? 'กำลังบันทึก...' : '💾 บันทึกใบงาน'}
+                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                      <polyline points="17 21 17 13 7 13 7 21"/>
+                      <polyline points="7 3 7 8 15 8"/>
+                    </svg>
+                    <span>{saving ? 'กำลังบันทึก...' : 'บันทึกใบงาน'}</span>
                   </button>
                 </div>
               </div>
@@ -685,7 +715,12 @@ export default function PlannerPage() {
           <div className="bg-white rounded-3xl max-w-xl w-full shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[88vh]">
             <div className="px-5 py-4 bg-emerald-700 text-white flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-bold">💬 ข้อความสรุปใบงานส่งกลุ่ม LINE (ครบทุกทีม)</h3>
+                <h3 className="text-sm font-bold flex items-center gap-2">
+                  <svg className="w-4 h-4 text-emerald-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                  </svg>
+                  <span>ข้อความสรุปใบงานส่งกลุ่ม LINE (ครบทุกทีม)</span>
+                </h3>
                 <p className="text-[11px] text-emerald-100">เลือกวันที่ต้องการสรุปแล้วกดคัดลอกข้อความ</p>
               </div>
               <button
@@ -727,9 +762,13 @@ export default function PlannerPage() {
                   navigator.clipboard.writeText(lineSummaryText)
                   showToast('คัดลอกข้อความสรุปใบงานทั้งหมดสำหรับส่ง LINE แล้ว!')
                 }}
-                className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md"
+                className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md flex items-center gap-1.5"
               >
-                📋 คัดลอกข้อความทั้งหมด
+                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                </svg>
+                <span>คัดลอกข้อความทั้งหมด</span>
               </button>
             </div>
           </div>
@@ -741,8 +780,12 @@ export default function PlannerPage() {
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden">
             <div className="px-5 py-4 bg-slate-900 text-white flex items-center justify-between">
-              <h3 className="text-sm font-bold">
-                💾 ประวัติการปรับแผนเดือน{THAI_MONTHS_FULL[month]} {year + 543}
+              <h3 className="text-sm font-bold flex items-center gap-2">
+                <svg className="w-4 h-4 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+                <span>ประวัติการปรับแผนเดือน{THAI_MONTHS_FULL[month]} {year + 543}</span>
               </h3>
               <button
                 onClick={() => setRevModalOpen(false)}
@@ -789,7 +832,7 @@ export default function PlannerPage() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="w-full py-2.5 rounded-xl bg-gradient-to-r from-[#0284c7] to-[#0d9488] hover:from-[#0369a1] hover:to-[#0f766e] text-white text-xs font-bold shadow-xs transition"
+                  className="w-full py-2.5 rounded-xl bg-[#0284c7] hover:bg-[#0369a1] text-white text-xs font-bold shadow-xs transition"
                 >
                   {saving ? 'กำลังบันทึก...' : '+ บันทึก Revision ใหม่ลงฐานข้อมูล'}
                 </button>

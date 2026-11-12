@@ -113,23 +113,13 @@ export default function FleetPage() {
                 </div>
               </div>
 
-              {canManageFleet && (
-                <div className="flex items-center gap-1.5 pt-1">
-                  {!isInUse && (
+              {/* 3 Status Buttons in a Row: ว่าง / ใช้งาน / เข้าศูนย์ */}
+              {canManageFleet ? (
+                <div className="pt-2 border-t border-slate-100">
+                  <div className="text-[11px] font-bold text-slate-500 mb-1.5">เปลี่ยนสถานะรถ:</div>
+                  <div className="grid grid-cols-3 gap-1.5">
                     <button
-                      onClick={() =>
-                        updateVehicleStatus({
-                          vehicleId: v.id,
-                          newStatus: 'in_use'
-                        })
-                      }
-                      className="flex-1 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition"
-                    >
-                      ใช้งาน
-                    </button>
-                  )}
-                  {!isAvail && (
-                    <button
+                      type="button"
                       onClick={() =>
                         updateVehicleStatus({
                           vehicleId: v.id,
@@ -137,13 +127,44 @@ export default function FleetPage() {
                           destText: 'จอดประจำออฟฟิศ'
                         })
                       }
-                      className="flex-1 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition"
+                      className={`py-1.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1 ${
+                        isAvail
+                          ? 'bg-emerald-600 text-white shadow-xs'
+                          : 'bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-200'
+                      }`}
                     >
-                      คืนรถ (ว่าง)
+                      {isAvail && (
+                        <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      )}
+                      <span>ว่าง</span>
                     </button>
-                  )}
-                  {!isMaint && (
+
                     <button
+                      type="button"
+                      onClick={() =>
+                        updateVehicleStatus({
+                          vehicleId: v.id,
+                          newStatus: 'in_use'
+                        })
+                      }
+                      className={`py-1.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1 ${
+                        isInUse
+                          ? 'bg-[#0284c7] text-white shadow-xs'
+                          : 'bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-200'
+                      }`}
+                    >
+                      {isInUse && (
+                        <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      )}
+                      <span>ใช้งาน</span>
+                    </button>
+
+                    <button
+                      type="button"
                       onClick={() =>
                         updateVehicleStatus({
                           vehicleId: v.id,
@@ -151,13 +172,22 @@ export default function FleetPage() {
                           destText: 'เข้าศูนย์ / ซ่อมบำรุง'
                         })
                       }
-                      className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-600 hover:text-rose-700 text-xs font-bold transition"
+                      className={`py-1.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1 ${
+                        isMaint
+                          ? 'bg-rose-600 text-white shadow-xs'
+                          : 'bg-slate-100 hover:bg-slate-200 text-slate-600 border border-slate-200'
+                      }`}
                     >
-                      ซ่อม
+                      {isMaint && (
+                        <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      )}
+                      <span>เข้าศูนย์</span>
                     </button>
-                  )}
+                  </div>
                 </div>
-              )}
+              ) : null}
             </div>
           )
         })}

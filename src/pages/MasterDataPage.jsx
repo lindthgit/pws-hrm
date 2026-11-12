@@ -42,11 +42,11 @@ export default function MasterDataPage() {
   }
 
   const roleColumns = [
-    { key: 'owner', label: '👑 Owner' },
-    { key: 'hr', label: '👩‍💼 HR' },
-    { key: 'clerk', label: '📋 เสมียน' },
-    { key: 'lead', label: '👷 หน.ทีม' },
-    { key: 'worker', label: '🔧 พนักงาน' }
+    { key: 'owner', label: 'Owner' },
+    { key: 'hr', label: 'HR' },
+    { key: 'clerk', label: 'เสมียน' },
+    { key: 'lead', label: 'หน.ทีม' },
+    { key: 'worker', label: 'พนักงาน' }
   ]
 
   async function handleSaveEmp(e) {
@@ -344,7 +344,13 @@ export default function MasterDataPage() {
           {/* Office Sites */}
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
             <div className="px-4 py-3 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-800">🏢 สาขาออฟฟิศ / โรงงาน ({officeSites.length} แห่ง)</span>
+              <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                <svg className="w-3.5 h-3.5 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M3 21h18" />
+                  <path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16" />
+                </svg>
+                <span>สาขาออฟฟิศ / โรงงาน ({officeSites.length} แห่ง)</span>
+              </span>
               <button
                 onClick={() =>
                   setOfficeSiteModal({
@@ -380,7 +386,13 @@ export default function MasterDataPage() {
           {/* Customer Sites */}
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
             <div className="px-4 py-3 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-800">📍 หน้างานลูกค้า ({customerSites.length} แห่ง)</span>
+              <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                <svg className="w-3.5 h-3.5 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                <span>หน้างานลูกค้า ({customerSites.length} แห่ง)</span>
+              </span>
               <button
                 onClick={() =>
                   setCsModal({
@@ -418,9 +430,15 @@ export default function MasterDataPage() {
       {/* TAB 5: 5-ROLE PERMISSIONS MATRIX (INTERACTIVE CHECKBOXES) */}
       {tab === 'permissions' && (
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-          <div className="px-4 py-3 bg-gradient-to-r from-slate-900 to-slate-800 text-white flex items-center justify-between">
+          <div className="px-4 py-3 bg-slate-900 text-white flex items-center justify-between">
             <div>
-              <h2 className="text-xs font-bold">🔐 ตารางสิทธิ์การใช้งานระบบตามตำแหน่ง (5 Roles Matrix)</h2>
+              <h2 className="text-xs font-bold flex items-center gap-1.5">
+                <svg className="w-3.5 h-3.5 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                </svg>
+                <span>ตารางสิทธิ์การใช้งานระบบตามตำแหน่ง (5 Roles Matrix)</span>
+              </h2>
               <p className="text-[11px] text-slate-400">ติ๊กถูกเพื่อเปิดหรือปิดสิทธิ์ ดู (View) / แก้ไข (Edit) / อนุมัติ (Approve) ซิงค์กับฐานข้อมูลทันที</p>
             </div>
           </div>
@@ -503,8 +521,12 @@ export default function MasterDataPage() {
         <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden space-y-3">
           <div className="px-4 py-3 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2">
             <div>
-              <span className="text-xs font-bold text-slate-800">
-                📜 ประวัติการเปลี่ยนแปลงข้อมูลหลักทั้งหมด ({masterAuditLogs.length} รายการล่าสุด)
+              <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                <svg className="w-3.5 h-3.5 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+                <span>ประวัติการเปลี่ยนแปลงข้อมูลหลักทั้งหมด ({masterAuditLogs.length} รายการล่าสุด)</span>
               </span>
               <p className="text-[11px] text-slate-500">
                 บันทึกการแก้ไข พนักงาน, ทีม, รถ, สาขา และสิทธิ์ เพื่อให้ตรวจสอบย้อนหลังได้ชัดเจน
@@ -556,8 +578,8 @@ export default function MasterDataPage() {
                             {log.action_type === 'delete' ? 'ลบข้อมูล' : log.action_type === 'create' ? 'เพิ่มใหม่' : log.action_type === 'permission_change' ? 'เปลี่ยนสิทธิ์' : 'แก้ไข'}
                           </span>
                         </td>
-                        <td className="px-3 py-2.5 text-slate-600 whitespace-nowrap">
-                          {log.entity_type === 'employee' ? '👥 พนักงาน' : log.entity_type === 'team' ? '👷 ทีม' : log.entity_type === 'vehicle' ? '🚛 รถ' : log.entity_type === 'site' ? '📍 สาขา/หน้างาน' : '🔐 สิทธิ์'}
+                        <td className="px-3 py-2.5 text-slate-600 whitespace-nowrap font-medium">
+                          {log.entity_type === 'employee' ? 'พนักงาน' : log.entity_type === 'team' ? 'ทีม' : log.entity_type === 'vehicle' ? 'รถ' : log.entity_type === 'site' ? 'สาขา/หน้างาน' : 'สิทธิ์'}
                         </td>
                         <td className="px-3 py-2.5 font-bold text-slate-900">{log.target_name}</td>
                         <td className="px-3 py-2.5 text-slate-600 max-w-xs">{log.details || '-'}</td>
@@ -579,8 +601,16 @@ export default function MasterDataPage() {
       {empModal && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden">
-            <div className="px-5 py-4 bg-gradient-to-r from-slate-900 to-slate-800 text-white flex items-center justify-between">
-              <h3 className="text-sm font-bold">👥 ข้อมูลพนักงาน, สิทธิ์ & โควตาวันลา</h3>
+            <div className="px-5 py-4 bg-slate-900 text-white flex items-center justify-between">
+              <h3 className="text-sm font-bold flex items-center gap-2">
+                <svg className="w-4 h-4 text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+                <span>ข้อมูลพนักงาน, สิทธิ์ & โควตาวันลา</span>
+              </h3>
               <button onClick={() => setEmpModal(null)} className="text-slate-400 hover:text-white">✕</button>
             </div>
             <form onSubmit={handleSaveEmp} className="p-5 space-y-3 text-xs max-h-[85vh] overflow-y-auto">
@@ -674,7 +704,15 @@ export default function MasterDataPage() {
 
               {/* Annual Leave Quota Section */}
               <div className="pt-2 border-t border-slate-200">
-                <span className="block font-bold text-slate-900 mb-2">🏖️ โควตาวันลาต่อปี (ใช้คำนวณวันลาคงเหลือ)</span>
+                <span className="block font-bold text-slate-900 mb-2 flex items-center gap-1.5">
+                  <svg className="w-3.5 h-3.5 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                  </svg>
+                  <span>โควตาวันลาต่อปี (ใช้คำนวณวันลาคงเหลือ)</span>
+                </span>
                 <div className="grid grid-cols-3 gap-2">
                   <div className="p-2.5 rounded-xl bg-emerald-50/60 border border-emerald-200">
                     <label className="block text-[11px] font-bold text-emerald-900 mb-1">ลาป่วย (วัน/ปี)</label>
@@ -719,7 +757,10 @@ export default function MasterDataPage() {
                     onClick={() => setDeleteConfirmModal({ id: empModal.id, name: empModal.name, emp_code: empModal.emp_code })}
                     className="px-3.5 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold transition flex items-center gap-1.5 border border-rose-200"
                   >
-                    <span>🗑️</span>
+                    <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="3 6 5 6 21 6" />
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                    </svg>
                     <span>ลบพนักงาน</span>
                   </button>
                 ) : <div />}
@@ -734,7 +775,7 @@ export default function MasterDataPage() {
                   </button>
                   <button
                     type="submit"
-                    className="px-5 py-2 rounded-xl bg-gradient-to-r from-[#0284c7] to-[#0d9488] hover:from-[#0369a1] hover:to-[#0f766e] text-white font-bold shadow-xs transition"
+                    className="px-5 py-2 rounded-xl bg-[#0284c7] hover:bg-[#0369a1] text-white font-bold shadow-xs transition"
                   >
                     บันทึกข้อมูล
                   </button>
@@ -749,8 +790,11 @@ export default function MasterDataPage() {
       {deleteConfirmModal && (
         <div className="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 space-y-4">
-            <div className="w-12 h-12 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center text-xl mx-auto">
-              🗑️
+            <div className="w-12 h-12 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center mx-auto">
+              <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="3 6 5 6 21 6" />
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+              </svg>
             </div>
             <div className="text-center space-y-1.5">
               <h4 className="text-base font-bold text-slate-900">ยืนยันการลบพนักงาน?</h4>
@@ -785,8 +829,13 @@ export default function MasterDataPage() {
       {teamModal && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden">
-            <div className="px-5 py-4 bg-gradient-to-r from-slate-900 to-slate-800 text-white flex items-center justify-between">
-              <h3 className="text-sm font-bold">👷 ข้อมูลทีมช่าง</h3>
+            <div className="px-5 py-4 bg-slate-900 text-white flex items-center justify-between">
+              <h3 className="text-sm font-bold flex items-center gap-2">
+                <svg className="w-4 h-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                ข้อมูลทีมช่าง
+              </h3>
               <button onClick={() => setTeamModal(null)} className="text-slate-400 hover:text-white">✕</button>
             </div>
             <form onSubmit={handleSaveTeam} className="p-5 space-y-3 text-xs">
@@ -858,7 +907,7 @@ export default function MasterDataPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl bg-gradient-to-r from-[#0284c7] to-[#0d9488] hover:from-[#0369a1] hover:to-[#0f766e] text-white font-bold shadow-xs transition"
+                  className="px-5 py-2 rounded-xl bg-[#0284c7] hover:bg-[#0369a1] text-white font-bold shadow-xs transition"
                 >
                   บันทึกทีม
                 </button>
@@ -872,8 +921,13 @@ export default function MasterDataPage() {
       {officeSiteModal && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden">
-            <div className="px-5 py-4 bg-gradient-to-r from-slate-900 to-slate-800 text-white flex items-center justify-between">
-              <h3 className="text-sm font-bold">🏢 แก้ไขสาขาออฟฟิศ / โรงงาน</h3>
+            <div className="px-5 py-4 bg-slate-900 text-white flex items-center justify-between">
+              <h3 className="text-sm font-bold flex items-center gap-2">
+                <svg className="w-4 h-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+                แก้ไขสาขาออฟฟิศ / โรงงาน
+              </h3>
               <button onClick={() => setOfficeSiteModal(null)} className="text-slate-400 hover:text-white">✕</button>
             </div>
             <form onSubmit={handleSaveOfficeSite} className="p-5 space-y-3 text-xs">
@@ -930,7 +984,7 @@ export default function MasterDataPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl bg-gradient-to-r from-[#0284c7] to-[#0d9488] hover:from-[#0369a1] hover:to-[#0f766e] text-white font-bold shadow-xs transition"
+                  className="px-5 py-2 rounded-xl bg-[#0284c7] hover:bg-[#0369a1] text-white font-bold shadow-xs transition"
                 >
                   บันทึกสาขา
                 </button>
@@ -944,8 +998,13 @@ export default function MasterDataPage() {
       {vehModal && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden">
-            <div className="px-5 py-4 bg-gradient-to-r from-slate-900 to-slate-800 text-white flex items-center justify-between">
-              <h3 className="text-sm font-bold">🚛 ข้อมูลรถส่วนกลาง</h3>
+            <div className="px-5 py-4 bg-slate-900 text-white flex items-center justify-between">
+              <h3 className="text-sm font-bold flex items-center gap-2">
+                <svg className="w-4 h-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                </svg>
+                ข้อมูลรถส่วนกลาง
+              </h3>
               <button onClick={() => setVehModal(null)} className="text-slate-400 hover:text-white">✕</button>
             </div>
             <form onSubmit={handleSaveVeh} className="p-5 space-y-3 text-xs">
@@ -999,7 +1058,7 @@ export default function MasterDataPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl bg-gradient-to-r from-[#0284c7] to-[#0d9488] hover:from-[#0369a1] hover:to-[#0f766e] text-white font-bold shadow-xs transition"
+                  className="px-5 py-2 rounded-xl bg-[#0284c7] hover:bg-[#0369a1] text-white font-bold shadow-xs transition"
                 >
                   บันทึกรถ
                 </button>
@@ -1013,8 +1072,14 @@ export default function MasterDataPage() {
       {csModal && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden">
-            <div className="px-5 py-4 bg-gradient-to-r from-slate-900 to-slate-800 text-white flex items-center justify-between">
-              <h3 className="text-sm font-bold">📍 ข้อมูลสถานที่หน้างานลูกค้า</h3>
+            <div className="px-5 py-4 bg-slate-900 text-white flex items-center justify-between">
+              <h3 className="text-sm font-bold flex items-center gap-2">
+                <svg className="w-4 h-4 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                ข้อมูลสถานที่หน้างานลูกค้า
+              </h3>
               <button onClick={() => setCsModal(null)} className="text-slate-400 hover:text-white">✕</button>
             </div>
             <form onSubmit={handleSaveCs} className="p-5 space-y-3 text-xs">
@@ -1047,7 +1112,7 @@ export default function MasterDataPage() {
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl bg-gradient-to-r from-[#0284c7] to-[#0d9488] hover:from-[#0369a1] hover:to-[#0f766e] text-white font-bold shadow-xs transition"
+                  className="px-5 py-2 rounded-xl bg-[#0284c7] hover:bg-[#0369a1] text-white font-bold shadow-xs transition"
                 >
                   บันทึกหน้างาน
                 </button>
