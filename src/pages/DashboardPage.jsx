@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useApp } from '../context/AppContext'
 import { formatThaiDateFull, getTaskColorClasses, getTodayISO } from '../lib/dateUtils'
@@ -58,9 +58,16 @@ export default function DashboardPage() {
     displayedPeople = summary.absentWorkers
   }
 
-  const visibleTeams = effectiveRole === 'lead' && activeUser?.team_id
-    ? teams.filter(t => t.id === activeUser.team_id)
-    : teams
+  // For lead: show all teams, but sort lead's own team to the top (index 0)
+  const visibleTeams = useMemo(() => {
+    return [...teams].sort((a, b) => {
+      if (effectiveRole === 'lead' && activeUser?.team_id) {
+        if (a.id === activeUser.team_id) return -1
+        if (b.id === activeUser.team_id) return 1
+      }
+      return (a.sort_order || 0) - (b.sort_order || 0)
+    })
+  }, [teams, effectiveRole, activeUser?.team_id])
 
   return (
     <div className="space-y-4">
@@ -94,20 +101,20 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* 4 Permanent Attendance Stat Cards (Show '--' for มา/ขาด when date is uncounted) */}
+      {/* 4 Attendance Stat Cards: Selected card shows prominent border/ring without changing background or text colors (per prototype) */}
       <div className="grid grid-cols-4 gap-2 sm:gap-3">
         <button
           onClick={() => handleCardClick('all')}
           className={`p-3 rounded-2xl border text-left transition ${
             dashboardSubtab === 'people' && dashboardFilter === 'all'
-              ? 'bg-slate-900 text-white border-slate-900 shadow-md'
+              ? 'bg-white text-slate-800 border-[#0284c7] ring-2 ring-[#0284c7] shadow-sm scale-[1.02]'
               : 'bg-white text-slate-800 border-slate-200 hover:border-slate-300 shadow-xs'
           }`}
         >
-          <div className={`text-[11px] font-bold ${dashboardSubtab === 'people' && dashboardFilter === 'all' ? 'text-slate-300' : 'text-slate-500'}`}>
+          <div className="text-[11px] font-bold text-slate-500">
             ทั้งหมด
           </div>
-          <div className="text-xl sm:text-2xl font-extrabold mt-0.5">
+          <div className="text-xl sm:text-2xl font-extrabold mt-0.5 text-slate-900">
             {summary.totalCount}
           </div>
         </button>
@@ -116,14 +123,14 @@ export default function DashboardPage() {
           onClick={() => handleCardClick('present')}
           className={`p-3 rounded-2xl border text-left transition ${
             dashboardSubtab === 'people' && dashboardFilter === 'present'
-              ? 'bg-emerald-600 text-white border-emerald-600 shadow-md'
+              ? 'bg-emerald-50/70 text-emerald-900 border-emerald-500 ring-2 ring-emerald-500 shadow-sm scale-[1.02]'
               : 'bg-emerald-50/70 text-emerald-900 border-emerald-200 hover:bg-emerald-100/70 shadow-xs'
           }`}
         >
-          <div className={`text-[11px] font-bold ${dashboardSubtab === 'people' && dashboardFilter === 'present' ? 'text-emerald-100' : 'text-emerald-700'}`}>
+          <div className="text-[11px] font-bold text-emerald-700">
             มาทำงาน
           </div>
-          <div className="text-xl sm:text-2xl font-extrabold mt-0.5">
+          <div className="text-xl sm:text-2xl font-extrabold mt-0.5 text-emerald-950">
             {summary.isCounted ? summary.presentCount : '--'}
           </div>
         </button>
@@ -132,14 +139,14 @@ export default function DashboardPage() {
           onClick={() => handleCardClick('leave')}
           className={`p-3 rounded-2xl border text-left transition ${
             dashboardSubtab === 'people' && dashboardFilter === 'leave'
-              ? 'bg-amber-500 text-white border-amber-500 shadow-md'
+              ? 'bg-amber-50/70 text-amber-900 border-amber-500 ring-2 ring-amber-500 shadow-sm scale-[1.02]'
               : 'bg-amber-50/70 text-amber-900 border-amber-200 hover:bg-amber-100/70 shadow-xs'
           }`}
         >
-          <div className={`text-[11px] font-bold ${dashboardSubtab === 'people' && dashboardFilter === 'leave' ? 'text-amber-100' : 'text-amber-700'}`}>
+          <div className="text-[11px] font-bold text-amber-700">
             ลา
           </div>
-          <div className="text-xl sm:text-2xl font-extrabold mt-0.5">
+          <div className="text-xl sm:text-2xl font-extrabold mt-0.5 text-amber-950">
             {summary.leaveCount}
           </div>
         </button>
@@ -148,14 +155,14 @@ export default function DashboardPage() {
           onClick={() => handleCardClick('absent')}
           className={`p-3 rounded-2xl border text-left transition ${
             dashboardSubtab === 'people' && dashboardFilter === 'absent'
-              ? 'bg-rose-600 text-white border-rose-600 shadow-md'
+              ? 'bg-rose-50/70 text-rose-900 border-rose-500 ring-2 ring-rose-500 shadow-sm scale-[1.02]'
               : 'bg-rose-50/70 text-rose-900 border-rose-200 hover:bg-rose-100/70 shadow-xs'
           }`}
         >
-          <div className={`text-[11px] font-bold ${dashboardSubtab === 'people' && dashboardFilter === 'absent' ? 'text-rose-100' : 'text-rose-700'}`}>
+          <div className="text-[11px] font-bold text-rose-700">
             ขาด
           </div>
-          <div className="text-xl sm:text-2xl font-extrabold mt-0.5">
+          <div className="text-xl sm:text-2xl font-extrabold mt-0.5 text-rose-950">
             {summary.isCounted ? summary.absentCount : '--'}
           </div>
         </button>
@@ -249,16 +256,30 @@ export default function DashboardPage() {
             })
 
             const groupList = Object.values(taskGroups)
+            const isMyLeadTeam = effectiveRole === 'lead' && activeUser?.team_id === team.id
 
             return (
               <div
                 key={team.id}
-                className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden flex flex-col"
+                className={`bg-white rounded-2xl border shadow-xs overflow-hidden flex flex-col transition ${
+                  isMyLeadTeam
+                    ? 'border-[#0284c7] ring-2 ring-[#0284c7]/40 shadow-md'
+                    : 'border-slate-200'
+                }`}
               >
-                <div className="px-4 py-2.5 bg-gradient-to-r from-sky-50 via-cyan-50/60 to-slate-50 border-b border-cyan-100 flex items-center justify-between">
+                <div className={`px-4 py-2.5 border-b flex items-center justify-between ${
+                  isMyLeadTeam
+                    ? 'bg-gradient-to-r from-sky-100/90 via-cyan-50 to-white border-cyan-200'
+                    : 'bg-gradient-to-r from-sky-50 via-cyan-50/60 to-slate-50 border-cyan-100'
+                }`}>
                   <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-[#0284c7]"></span>
+                    <span className={`w-2 h-2 rounded-full ${isMyLeadTeam ? 'bg-[#0284c7] ring-2 ring-sky-300' : 'bg-[#0284c7]'}`}></span>
                     <span className="font-bold text-xs sm:text-sm text-slate-900">{team.name}</span>
+                    {isMyLeadTeam && (
+                      <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-[#0284c7] text-white shadow-xs">
+                        ⭐ ทีมของคุณ
+                      </span>
+                    )}
                     <span className="text-[11px] font-semibold text-slate-500">({teamWorkers.length} คน)</span>
                   </div>
                   {canViewModule('planner') && (

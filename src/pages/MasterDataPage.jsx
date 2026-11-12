@@ -9,7 +9,9 @@ export default function MasterDataPage() {
     officeSites,
     customerSites,
     rolePermissions,
+    masterAuditLogs,
     upsertEmployee,
+    deleteEmployee,
     upsertTeam,
     upsertVehicle,
     upsertCustomerSite,
@@ -18,12 +20,13 @@ export default function MasterDataPage() {
     updateRolePermission
   } = useApp()
 
-  const [tab, setTab] = useState('employees') // 'employees' | 'teams' | 'vehicles' | 'sites' | 'permissions'
+  const [tab, setTab] = useState('employees') // 'employees' | 'teams' | 'vehicles' | 'sites' | 'permissions' | 'audit'
   const [empModal, setEmpModal] = useState(null)
   const [teamModal, setTeamModal] = useState(null)
   const [vehModal, setVehModal] = useState(null)
   const [csModal, setCsModal] = useState(null)
   const [officeSiteModal, setOfficeSiteModal] = useState(null)
+  const [deleteConfirmModal, setDeleteConfirmModal] = useState(null)
 
   const moduleLabels = {
     dashboard: '1. ภาพรวม (Dashboard)',
@@ -53,6 +56,15 @@ export default function MasterDataPage() {
       quota_annual: Number(empModal.quota_annual) || 6
     })
     if (ok) setEmpModal(null)
+  }
+
+  async function confirmDeleteEmp() {
+    if (!deleteConfirmModal) return
+    const ok = await deleteEmployee(deleteConfirmModal.id, deleteConfirmModal.name)
+    if (ok) {
+      setDeleteConfirmModal(null)
+      setEmpModal(null)
+    }
   }
 
   async function handleSaveTeam(e) {
@@ -115,7 +127,8 @@ export default function MasterDataPage() {
             { id: 'teams', label: `👷 ทีมช่าง (${teams.length})` },
             { id: 'vehicles', label: `🚛 รถ (${vehicles.length})` },
             { id: 'sites', label: `📍 สาขา & หน้างาน` },
-            { id: 'permissions', label: `🔐 ตารางสิทธิ์ (5 Roles)` }
+            { id: 'permissions', label: `🔐 ตารางสิทธิ์ (5 Roles)` },
+            { id: 'audit', label: `📜 ประวัติการแก้ไข (${masterAuditLogs.length})` }
           ].map(t => (
             <button
               key={t.id}
@@ -476,6 +489,83 @@ export default function MasterDataPage() {
         </div>
       )}
 
+      {/* TAB 6: AUDIT LOG */}
+      {tab === 'audit' && (
+        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden space-y-3">
+          <div className="px-4 py-3 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <span className="text-xs font-bold text-slate-800">
+                📜 ประวัติการเปลี่ยนแปลงข้อมูลหลักทั้งหมด ({masterAuditLogs.length} รายการล่าสุด)
+              </span>
+              <p className="text-[11px] text-slate-500">
+                บันทึกการแก้ไข พนักงาน, ทีม, รถ, สาขา และสิทธิ์ เพื่อให้ตรวจสอบย้อนหลังได้ชัดเจน
+              </p>
+            </div>
+          </div>
+
+          <div className="overflow-x-auto">
+            {masterAuditLogs.length === 0 ? (
+              <div className="p-8 text-center text-xs text-slate-400">
+                ยังไม่มีประวัติการแก้ไขข้อมูลในระบบ
+              </div>
+            ) : (
+              <table className="w-full text-xs text-left border-collapse">
+                <thead className="bg-slate-100 text-slate-600 border-b border-slate-200">
+                  <tr>
+                    <th className="px-3 py-2.5 whitespace-nowrap">วัน - เวลา</th>
+                    <th className="px-3 py-2.5 whitespace-nowrap">การกระทำ</th>
+                    <th className="px-3 py-2.5 whitespace-nowrap">หมวดหมู่</th>
+                    <th className="px-3 py-2.5">รายการที่แก้ไข</th>
+                    <th className="px-3 py-2.5">รายละเอียด</th>
+                    <th className="px-3 py-2.5 whitespace-nowrap">ผู้ดำเนินการ</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {masterAuditLogs.map(log => {
+                    const dateObj = new Date(log.created_at)
+                    const timeStr = dateObj.toLocaleDateString('th-TH', {
+                      day: 'numeric',
+                      month: 'short',
+                      year: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })
+
+                    return (
+                      <tr key={log.id} className="hover:bg-slate-50 transition">
+                        <td className="px-3 py-2.5 font-mono text-slate-600 whitespace-nowrap">{timeStr}</td>
+                        <td className="px-3 py-2.5 whitespace-nowrap">
+                          <span className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${
+                            log.action_type === 'delete'
+                              ? 'bg-rose-100 text-rose-700'
+                              : log.action_type === 'create'
+                              ? 'bg-emerald-100 text-emerald-700'
+                              : log.action_type === 'permission_change'
+                              ? 'bg-purple-100 text-purple-700'
+                              : 'bg-sky-100 text-sky-700'
+                          }`}>
+                            {log.action_type === 'delete' ? 'ลบข้อมูล' : log.action_type === 'create' ? 'เพิ่มใหม่' : log.action_type === 'permission_change' ? 'เปลี่ยนสิทธิ์' : 'แก้ไข'}
+                          </span>
+                        </td>
+                        <td className="px-3 py-2.5 text-slate-600 whitespace-nowrap">
+                          {log.entity_type === 'employee' ? '👥 พนักงาน' : log.entity_type === 'team' ? '👷 ทีม' : log.entity_type === 'vehicle' ? '🚛 รถ' : log.entity_type === 'site' ? '📍 สาขา/หน้างาน' : '🔐 สิทธิ์'}
+                        </td>
+                        <td className="px-3 py-2.5 font-bold text-slate-900">{log.target_name}</td>
+                        <td className="px-3 py-2.5 text-slate-600 max-w-xs">{log.details || '-'}</td>
+                        <td className="px-3 py-2.5 whitespace-nowrap">
+                          <span className="font-semibold text-slate-800">{log.performed_by_name}</span>
+                          <span className="text-[10px] text-slate-400 ml-1.5 font-mono">({log.performed_by_role})</span>
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Employee Edit/Add Modal */}
       {empModal && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
@@ -613,22 +703,71 @@ export default function MasterDataPage() {
                 </div>
               </div>
 
-              <div className="flex justify-end gap-2 pt-3">
-                <button
-                  type="button"
-                  onClick={() => setEmpModal(null)}
-                  className="px-4 py-2 rounded-xl bg-slate-100 font-bold hover:bg-slate-200 text-slate-700 transition"
-                >
-                  ยกเลิก
-                </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2 rounded-xl bg-gradient-to-r from-[#0284c7] to-[#0d9488] hover:from-[#0369a1] hover:to-[#0f766e] text-white font-bold shadow-xs transition"
-                >
-                  บันทึกข้อมูล
-                </button>
+              <div className="flex items-center justify-between gap-2 pt-3 border-t border-slate-100">
+                {employees.some(e => e.id === empModal.id) ? (
+                  <button
+                    type="button"
+                    onClick={() => setDeleteConfirmModal({ id: empModal.id, name: empModal.name, emp_code: empModal.emp_code })}
+                    className="px-3.5 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold transition flex items-center gap-1.5 border border-rose-200"
+                  >
+                    <span>🗑️</span>
+                    <span>ลบพนักงาน</span>
+                  </button>
+                ) : <div />}
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setEmpModal(null)}
+                    className="px-4 py-2 rounded-xl bg-slate-100 font-bold hover:bg-slate-200 text-slate-700 transition"
+                  >
+                    ยกเลิก
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-5 py-2 rounded-xl bg-gradient-to-r from-[#0284c7] to-[#0d9488] hover:from-[#0369a1] hover:to-[#0f766e] text-white font-bold shadow-xs transition"
+                  >
+                    บันทึกข้อมูล
+                  </button>
+                </div>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Employee Confirmation Modal */}
+      {deleteConfirmModal && (
+        <div className="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+            <div className="w-12 h-12 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center text-xl mx-auto">
+              🗑️
+            </div>
+            <div className="text-center space-y-1.5">
+              <h4 className="text-base font-bold text-slate-900">ยืนยันการลบพนักงาน?</h4>
+              <p className="text-xs text-slate-600">
+                คุณแน่ใจหรือไม่ว่าต้องการลบพนักงาน <span className="font-bold text-slate-900">{deleteConfirmModal.name}</span> ({deleteConfirmModal.emp_code}) ออกจากระบบ?
+              </p>
+              <p className="text-[11px] text-slate-400">
+                พนักงานจะถูกปลดออกจากระบบและไม่สามารถล็อกอินหรือเข้าใช้งานได้อีก
+              </p>
+            </div>
+            <div className="flex gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => setDeleteConfirmModal(null)}
+                className="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition"
+              >
+                ยกเลิก
+              </button>
+              <button
+                type="button"
+                onClick={confirmDeleteEmp}
+                className="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-xs transition"
+              >
+                ยืนยันการลบ
+              </button>
+            </div>
           </div>
         </div>
       )}

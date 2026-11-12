@@ -4,6 +4,86 @@ import { useApp } from '../context/AppContext'
 import DeveloperBar from './DeveloperBar'
 import { formatThaiDateShort } from '../lib/dateUtils'
 
+// Monochrome SVG Icons (styled by currentColor)
+function NavIcon({ name, className = "w-5 h-5" }) {
+  switch (name) {
+    case 'dashboard':
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
+          <path d="M22 12A10 10 0 0 0 12 2v10z" />
+        </svg>
+      )
+    case 'planner':
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+          <line x1="16" y1="2" x2="16" y2="6" />
+          <line x1="8" y1="2" x2="8" y2="6" />
+          <line x1="3" y1="10" x2="21" y2="10" />
+        </svg>
+      )
+    case 'clerk':
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+          <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+          <path d="m9 14 2 2 4-4" />
+        </svg>
+      )
+    case 'fleet':
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="1" y="3" width="15" height="13" rx="1" />
+          <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
+          <circle cx="5.5" cy="18.5" r="2.5" />
+          <circle cx="18.5" cy="18.5" r="2.5" />
+        </svg>
+      )
+    case 'approvals':
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+          <path d="m9 12 2 2 4-4" />
+        </svg>
+      )
+    case 'selfservice':
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+          <polyline points="14 2 14 8 20 8" />
+          <line x1="16" y1="13" x2="8" y2="13" />
+          <line x1="16" y1="17" x2="8" y2="17" />
+          <polyline points="10 9 9 9 8 9" />
+        </svg>
+      )
+    case 'master':
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="3" />
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+        </svg>
+      )
+    case 'profile':
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+          <circle cx="12" cy="7" r="4" />
+        </svg>
+      )
+    case 'more':
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="1.5" />
+          <circle cx="19" cy="12" r="1.5" />
+          <circle cx="5" cy="12" r="1.5" />
+        </svg>
+      )
+    default:
+      return null
+  }
+}
+
 export default function AppShell({ children }) {
   const { activeUser, effectiveRole, logout } = useAuth()
   const {
@@ -11,6 +91,7 @@ export default function AppShell({ children }) {
     setActiveTab,
     leaveRequests,
     otRequests,
+    masterAuditLogs,
     officeSites,
     teams,
     employees,
@@ -19,18 +100,20 @@ export default function AppShell({ children }) {
   } = useApp()
 
   const [notifOpen, setNotifOpen] = useState(false)
+  const [moreMenuOpen, setMoreMenuOpen] = useState(false)
 
   // Role-based notification logic:
-  // - Owner / HR: see all pending leaves & OT needing approval
+  // - Owner / HR: see pending leaves, pending OTs, and recent Master Data audit logs
   // - Clerk: see pending items for their branch site
   // - Lead: see pending items for their team
-  // - Worker: do NOT see notifications to approve others; only see their own requests
+  // - Worker: see their own recent requests
   let notifItems = []
   let notifBadgeCount = 0
 
   if (effectiveRole === 'owner' || effectiveRole === 'hr') {
     const pendingLeaves = leaveRequests.filter(l => l.status === 'pending')
     const pendingOts = otRequests.filter(o => o.status === 'pending')
+    const recentAudits = (masterAuditLogs || []).slice(0, 10)
     notifBadgeCount = pendingLeaves.length + pendingOts.length
     notifItems = [
       ...pendingLeaves.map(lv => ({
@@ -48,10 +131,24 @@ export default function AppShell({ children }) {
         subtitle: `${formatThaiDateShort(ot.date_val)} • ${ot.hours_slot}`,
         actionHint: 'คลิกเพื่อไปหน้า วันลา & OT →',
         targetTab: 'approvals'
-      }))
+      })),
+      ...recentAudits.map(log => {
+        let actionBadge = '⚙️ แก้ไข'
+        if (log.action_type === 'delete') actionBadge = '🗑️ ลบ'
+        if (log.action_type === 'create') actionBadge = '✨ เพิ่ม'
+        if (log.action_type === 'permission_change') actionBadge = '🔐 ปรับสิทธิ์'
+
+        return {
+          id: `audit-${log.id}`,
+          icon: log.action_type === 'delete' ? '🗑️' : log.action_type === 'permission_change' ? '🔐' : '⚙️',
+          title: `${actionBadge} ${log.target_name}`,
+          subtitle: `${log.details || ''} • โดย ${log.performed_by_name} (${log.performed_by_role})`,
+          actionHint: 'คลิกเพื่อดูประวัติตั้งค่าระบบ →',
+          targetTab: 'master'
+        }
+      })
     ]
   } else if (effectiveRole === 'clerk') {
-    // Clerk sees pending requests from workers stationed in their branch
     const branchWorkerIds = new Set(
       employees.filter(e => e.office_site_id === activeUser?.office_site_id).map(e => e.id)
     )
@@ -77,7 +174,6 @@ export default function AppShell({ children }) {
       }))
     ]
   } else if (effectiveRole === 'lead') {
-    // Lead sees pending requests from their team
     const teamWorkerIds = new Set(
       employees.filter(e => e.team_id === activeUser?.team_id).map(e => e.id)
     )
@@ -103,8 +199,6 @@ export default function AppShell({ children }) {
       }))
     ]
   } else {
-    // Worker: 0 badge count (workers do NOT have approval duties!)
-    // If they open notification drawer, show their own recent status
     const myRecentLeaves = leaveRequests.filter(l => l.worker_id === activeUser?.id).slice(0, 3)
     const myRecentOts = otRequests.filter(o => o.worker_id === activeUser?.id).slice(0, 3)
     notifBadgeCount = 0
@@ -141,26 +235,60 @@ export default function AppShell({ children }) {
   const userTeam = teams.find(t => t.id === activeUser?.team_id)
 
   const allNavItems = [
-    { id: 'dashboard', label: 'ภาพรวม', icon: '📊' },
-    { id: 'planner', label: 'วางแผนเดือน', icon: '📅' },
-    { id: 'clerk', label: 'ใบงาน/ลงเวลา', icon: '📋' },
-    { id: 'fleet', label: 'สถานะรถ', icon: '🚛' },
+    { id: 'dashboard', label: 'ภาพรวม' },
+    { id: 'planner', label: 'วางแผนเดือน' },
+    { id: 'clerk', label: 'ใบงาน/ลงเวลา' },
+    { id: 'fleet', label: 'สถานะรถ' },
     {
       id: 'approvals',
       label: 'วันลา & OT',
-      icon: '✅',
       badgeCount: (effectiveRole === 'owner' || effectiveRole === 'hr') ? notifBadgeCount : 0
     },
-    { id: 'selfservice', label: 'ยื่นใบลา / OT', icon: '📝' },
-    { id: 'master', label: 'ตั้งค่าระบบ', icon: '⚙️' },
-    { id: 'profile', label: 'ข้อมูลส่วนตัว', icon: '👤' }
+    { id: 'selfservice', label: 'ยื่นใบลา / OT' },
+    { id: 'master', label: 'ตั้งค่าระบบ' },
+    { id: 'profile', label: 'ข้อมูลส่วนตัว' }
   ]
 
   const visibleNavItems = allNavItems.filter(item => canViewModule(item.id, effectiveRole))
 
+  // Mobile Bottom Bar item breakdown:
+  // Primary 4 items + "เพิ่มเติม" (More) for multi-module roles
+  const isWorker = effectiveRole === 'worker'
+
+  const mobilePrimaryTabs = isWorker
+    ? [
+        { id: 'selfservice', label: 'ยื่นใบลา / OT' },
+        { id: 'profile', label: 'ข้อมูลส่วนตัว' }
+      ]
+    : [
+        { id: 'dashboard', label: 'ภาพรวม' },
+        { id: 'clerk', label: 'ใบงาน/เวลา' },
+        { id: 'fleet', label: 'สถานะรถ' },
+        {
+          id: 'approvals',
+          label: 'วันลา & OT',
+          badgeCount: (effectiveRole === 'owner' || effectiveRole === 'hr') ? notifBadgeCount : 0
+        }
+      ].filter(item => canViewModule(item.id, effectiveRole))
+
+  // Secondary menu items inside "เพิ่มเติม" (Ordered per user spec: Planner, Self-Service, Profile, Master Data at the end)
+  const mobileMoreItems = [
+    { id: 'planner', label: 'วางแผนเดือน', show: canViewModule('planner', effectiveRole) },
+    { id: 'selfservice', label: 'ยื่นใบลา / OT', show: canViewModule('selfservice', effectiveRole) },
+    { id: 'profile', label: 'ข้อมูลส่วนตัว', show: true },
+    { id: 'master', label: 'ตั้งค่าระบบ', show: canViewModule('master', effectiveRole) }
+  ].filter(item => item.show)
+
+  const isMoreTabActive = mobileMoreItems.some(item => item.id === activeTab)
+
   function handleNotifItemClick(targetTab) {
     setNotifOpen(false)
     if (targetTab) setActiveTab(targetTab)
+  }
+
+  function handleSelectMobileTab(tabId) {
+    setActiveTab(tabId)
+    setMoreMenuOpen(false)
   }
 
   return (
@@ -214,10 +342,10 @@ export default function AppShell({ children }) {
               </button>
 
               {notifOpen && (
-                <div className="absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden z-50">
+                <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden z-50">
                   <div className="px-4 py-3 bg-slate-900 text-white flex items-center justify-between">
                     <span className="text-xs font-bold">
-                      🔔 การแจ้งเตือน {notifBadgeCount > 0 ? `(${notifBadgeCount} รายการ)` : ''}
+                      🔔 การแจ้งเตือน {notifBadgeCount > 0 ? `(${notifBadgeCount} รายการรออนุมัติ)` : ''}
                     </span>
                     <button
                       onClick={() => setNotifOpen(false)}
@@ -245,10 +373,10 @@ export default function AppShell({ children }) {
                             <div className="text-xs font-bold text-slate-800 truncate">
                               {item.title}
                             </div>
-                            <div className="text-[11px] text-slate-500 truncate">
+                            <div className="text-[11px] text-slate-500 line-clamp-2 mt-0.5">
                               {item.subtitle}
                             </div>
-                            <div className="text-[10px] text-cyan-700 font-semibold mt-0.5">
+                            <div className="text-[10px] text-cyan-700 font-semibold mt-1">
                               {item.actionHint}
                             </div>
                           </div>
@@ -269,7 +397,7 @@ export default function AppShell({ children }) {
                   : 'bg-slate-100 text-slate-700 border-transparent hover:bg-slate-200'
               }`}
             >
-              <span>👤</span>
+              <NavIcon name="profile" className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">{activeUser?.emp_code}</span>
             </button>
 
@@ -303,7 +431,7 @@ export default function AppShell({ children }) {
                   }`}
                 >
                   <div className="flex items-center gap-2.5">
-                    <span className="text-base">{item.icon}</span>
+                    <NavIcon name={item.id} className="w-4 h-4" />
                     <span>{item.label}</span>
                   </div>
                   {item.badgeCount > 0 && (
@@ -319,45 +447,110 @@ export default function AppShell({ children }) {
               )
             })}
           </nav>
-
-          {/* User footer removed per request */}
         </aside>
 
-        {/* Main Page View */}
-        <main className="flex-1 min-w-0 p-3 sm:p-5 pb-24 lg:pb-8">
+        {/* Main Page View with safe bottom spacing for mobile nav bar */}
+        <main className="flex-1 min-w-0 p-3 sm:p-5 pb-28 sm:pb-32 lg:pb-8">
           {children}
         </main>
       </div>
 
       {/* Mobile Bottom Navigation Bar (Hidden on desktop lg+) */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-slate-200 shadow-lg px-1 py-1">
-        <div className="flex items-center justify-around">
-          {visibleNavItems.map(item => {
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/90 shadow-[0_-4px_16px_rgba(0,0,0,0.06)] px-2 pt-2 pb-[max(0.85rem,env(safe-area-inset-bottom))]">
+        <div className="flex items-center justify-around max-w-md mx-auto">
+          {mobilePrimaryTabs.map(item => {
             const isActive = activeTab === item.id
             return (
               <button
                 key={item.id}
-                onClick={() => setActiveTab(item.id)}
-                className={`relative flex flex-col items-center justify-center py-1 px-2 rounded-xl min-w-[52px] transition ${
-                  isActive ? 'text-[#0284c7] font-bold' : 'text-slate-500 hover:text-slate-800'
+                onClick={() => handleSelectMobileTab(item.id)}
+                className={`relative flex-1 flex flex-col items-center justify-center py-1 rounded-xl transition ${
+                  isActive ? 'text-[#0284c7] font-bold' : 'text-slate-500 hover:text-slate-700'
                 }`}
               >
-                <span className="text-base leading-none">{item.icon}</span>
-                <span className="text-[10px] mt-1 truncate max-w-[64px]">{item.label}</span>
+                <NavIcon name={item.id} className="w-5 h-5" />
+                <span className="text-[10px] mt-1 truncate max-w-[68px]">{item.label}</span>
                 {item.badgeCount > 0 && (
-                  <span className="absolute top-0.5 right-2 min-w-[15px] h-[15px] px-1 rounded-full bg-rose-500 text-white text-[9px] font-bold flex items-center justify-center">
+                  <span className="absolute top-0 right-3 min-w-[15px] h-[15px] px-1 rounded-full bg-rose-500 text-white text-[9px] font-bold flex items-center justify-center animate-pulse">
                     {item.badgeCount}
                   </span>
                 )}
               </button>
             )
           })}
+
+          {/* "เพิ่มเติม" (More Button) - only for multi-tab roles */}
+          {!isWorker && mobileMoreItems.length > 0 && (
+            <button
+              onClick={() => setMoreMenuOpen(!moreMenuOpen)}
+              className={`relative flex-1 flex flex-col items-center justify-center py-1 rounded-xl transition ${
+                isMoreTabActive ? 'text-[#0284c7] font-bold' : 'text-slate-500 hover:text-slate-700'
+              }`}
+            >
+              <NavIcon name="more" className="w-5 h-5" />
+              <span className="text-[10px] mt-1 truncate max-w-[68px]">เพิ่มเติม</span>
+              {isMoreTabActive && (
+                <span className="w-1.5 h-1.5 rounded-full bg-[#0284c7] mt-0.5"></span>
+              )}
+            </button>
+          )}
         </div>
       </nav>
 
+      {/* Mobile "เพิ่มเติม" (More Menu) Bottom Sheet */}
+      {moreMenuOpen && (
+        <div className="lg:hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex flex-col justify-end">
+          <div
+            className="flex-1"
+            onClick={() => setMoreMenuOpen(false)}
+          />
+          <div className="bg-white rounded-t-3xl border-t border-slate-200 shadow-2xl p-5 pb-[max(1.5rem,env(safe-area-inset-bottom))] space-y-3 animate-in slide-in-from-bottom duration-200">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+              <span className="text-xs font-bold text-slate-800 flex items-center gap-2">
+                <NavIcon name="more" className="w-4 h-4 text-slate-600" />
+                เมนูเพิ่มเติม
+              </span>
+              <button
+                onClick={() => setMoreMenuOpen(false)}
+                className="w-7 h-7 rounded-full bg-slate-100 text-slate-500 hover:text-slate-900 flex items-center justify-center text-xs font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 gap-1.5">
+              {mobileMoreItems.map(item => {
+                const isActive = activeTab === item.id
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => handleSelectMobileTab(item.id)}
+                    className={`w-full flex items-center justify-between p-3 rounded-2xl text-xs font-bold transition ${
+                      isActive
+                        ? 'bg-sky-50 text-[#0284c7] border border-sky-200 shadow-xs'
+                        : 'text-slate-700 hover:bg-slate-100 border border-transparent'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className={`w-8 h-8 rounded-xl flex items-center justify-center ${isActive ? 'bg-[#0284c7] text-white' : 'bg-slate-100 text-slate-600'}`}>
+                        <NavIcon name={item.id} className="w-4 h-4" />
+                      </span>
+                      <span className="text-sm">{item.label}</span>
+                    </div>
+                    {isActive && (
+                      <span className="text-xs text-[#0284c7] font-extrabold">✓ กำลังดู</span>
+                    )}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Global Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-16 lg:bottom-6 right-4 z-50 max-w-sm bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-2xl border border-slate-700 flex items-center gap-2.5 text-xs font-semibold animate-bounce">
+        <div className="fixed bottom-20 lg:bottom-6 right-4 z-50 max-w-sm bg-slate-900 text-white px-4 py-3 rounded-2xl shadow-2xl border border-slate-700 flex items-center gap-2.5 text-xs font-semibold">
           <span>{toastMessage.type === 'error' ? '⚠️' : '✅'}</span>
           <span>{toastMessage.msg}</span>
         </div>

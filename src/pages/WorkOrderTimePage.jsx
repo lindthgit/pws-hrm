@@ -50,9 +50,16 @@ export default function WorkOrderTimePage() {
     ? employees
     : employees.filter(e => e.office_site_id === siteFilter)
 
-  const visibleTeams = siteFilter === 'all'
+  const visibleTeams = (siteFilter === 'all'
     ? teams
     : teams.filter(t => t.office_site_id === siteFilter)
+  ).slice().sort((a, b) => {
+    if (effectiveRole === 'lead' && activeUser?.team_id) {
+      if (a.id === activeUser.team_id) return -1
+      if (b.id === activeUser.team_id) return 1
+    }
+    return (a.sort_order || 0) - (b.sort_order || 0)
+  })
 
   function getDraftTime(workerId, field, fallbackVal) {
     const key = `${selectedDate}_${workerId}_${field}`
@@ -230,15 +237,30 @@ export default function WorkOrderTimePage() {
               taskGroups[key].workers.push(w)
             })
 
+            const isMyLeadTeam = effectiveRole === 'lead' && activeUser?.team_id === team.id
+
             return (
               <div
                 key={team.id}
-                className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden flex flex-col"
+                className={`bg-white rounded-2xl border shadow-xs overflow-hidden flex flex-col transition ${
+                  isMyLeadTeam
+                    ? 'border-[#0284c7] ring-2 ring-[#0284c7]/40 shadow-md'
+                    : 'border-slate-200'
+                }`}
               >
-                <div className="px-4 py-2.5 bg-gradient-to-r from-sky-50 via-cyan-50/60 to-slate-50 border-b border-cyan-100 flex items-center justify-between">
+                <div className={`px-4 py-2.5 border-b flex items-center justify-between ${
+                  isMyLeadTeam
+                    ? 'bg-gradient-to-r from-sky-100/90 via-cyan-50 to-white border-cyan-200'
+                    : 'bg-gradient-to-r from-sky-50 via-cyan-50/60 to-slate-50 border-cyan-100'
+                }`}>
                   <span className="font-bold text-xs sm:text-sm text-slate-900 flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-[#0284c7]"></span>
+                    <span className={`w-2 h-2 rounded-full ${isMyLeadTeam ? 'bg-[#0284c7] ring-2 ring-sky-300' : 'bg-[#0284c7]'}`}></span>
                     👷 {team.name}
+                    {isMyLeadTeam && (
+                      <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-[#0284c7] text-white shadow-xs ml-1">
+                        ⭐ ทีมของคุณ
+                      </span>
+                    )}
                   </span>
                   <span className="text-[11px] font-semibold text-[#0369a1] bg-white px-2 py-0.5 rounded-lg border border-cyan-200">
                     📍 {team.site || 'ประจำออฟฟิศ'}

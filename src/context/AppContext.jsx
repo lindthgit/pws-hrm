@@ -36,6 +36,7 @@ export function AppProvider({ children }) {
   const [dailyPunches, setDailyPunches] = useState([])
   const [leaveRequests, setLeaveRequests] = useState([])
   const [otRequests, setOtRequests] = useState([])
+  const [masterAuditLogs, setMasterAuditLogs] = useState([])
   const [dataLoading, setDataLoading] = useState(true)
 
   const showToast = useCallback((msg, type = 'success') => {
@@ -73,7 +74,8 @@ export function AppProvider({ children }) {
         dispRes,
         punchRes,
         leaveRes,
-        otRes
+        otRes,
+        auditRes
       ] = await Promise.all([
         supabase.from('office_sites').select('*').order('sort_order', { ascending: true }),
         supabase.from('customer_sites').select('*').order('id', { ascending: true }),
@@ -86,7 +88,8 @@ export function AppProvider({ children }) {
         supabase.from('daily_dispatches').select('*'),
         supabase.from('daily_punches').select('*'),
         supabase.from('leave_requests').select('*').order('created_at', { ascending: false }),
-        supabase.from('ot_requests').select('*').order('created_at', { ascending: false })
+        supabase.from('ot_requests').select('*').order('created_at', { ascending: false }),
+        supabase.from('master_audit_logs').select('*').order('created_at', { ascending: false }).limit(100)
       ])
 
       if (osRes.data) setOfficeSites(osRes.data)
@@ -101,6 +104,7 @@ export function AppProvider({ children }) {
       if (punchRes.data) setDailyPunches(punchRes.data)
       if (leaveRes.data) setLeaveRequests(leaveRes.data)
       if (otRes.data) setOtRequests(otRes.data)
+      if (auditRes.data) setMasterAuditLogs(auditRes.data)
     } catch (err) {
       console.error('Error loading Supabase data:', err)
       showToast('โหลดข้อมูลจากฐานข้อมูลไม่สำเร็จ', 'error')
@@ -610,8 +614,36 @@ export function AppProvider({ children }) {
     return true
   }, [activeUser, fetchAllData, showToast])
 
+  // Master Data Audit Logging Helper
+  const logMasterChange = useCallback(async ({ actionType, entityType, entityId, targetName, details }) => {
+    try {
+      const payload = {
+        action_type: actionType,
+        entity_type: entityType,
+        entity_id: String(entityId || ''),
+        target_name: targetName || 'ข้อมูลในระบบ',
+        details: details || '',
+        performed_by_id: activeUser?.id || null,
+        performed_by_name: activeUser?.name || 'ผู้ใช้งาน',
+        performed_by_role: effectiveRole || 'hr',
+        created_at: new Date().toISOString()
+      }
+      const { error } = await supabase.from('master_audit_logs').insert(payload)
+      if (error) {
+        console.error('Failed to insert audit log:', error)
+      } else {
+        const { data } = await supabase.from('master_audit_logs').select('*').order('created_at', { ascending: false }).limit(100)
+        if (data) setMasterAuditLogs(data)
+      }
+    } catch (err) {
+      console.error('Error logging master change:', err)
+    }
+  }, [activeUser, effectiveRole])
+
   // Master Data Mutations
   const upsertEmployee = useCallback(async (empPayload) => {
+    const existing = allAccounts.find(e => e.id === empPayload.id)
+    const isNew = !existing
     const { error } = await supabase
       .from('employees')
       .upsert(empPayload, { onConflict: 'id' })
@@ -619,12 +651,46 @@ export function AppProvider({ children }) {
       showToast('บันทึกข้อมูลพนักงานไม่สำเร็จ: ' + error.message, 'error')
       return false
     }
+    await logMasterChange({
+      actionType: isNew ? 'create' : 'update',
+      entityType: 'employee',
+      entityId: empPayload.id,
+      targetName: empPayload.name,
+      details: isNew
+        ? `เพิ่มพนักงานใหม่: ${empPayload.name} (${empPayload.emp_code}) ตำแหน่ง ${empPayload.job_title || '-'} สิทธิ์ ${empPayload.app_role}`
+        : `แก้ไขข้อมูลพนักงาน: ${empPayload.name} (${empPayload.emp_code}) โควตาลาป่วย ${empPayload.quota_sick} วัน, ลากิจ ${empPayload.quota_personal} วัน, พักร้อน ${empPayload.quota_annual} วัน`
+    })
     await fetchAllData(true)
     showToast('บันทึกข้อมูลพนักงานลงฐานข้อมูลเรียบร้อย')
     return true
-  }, [fetchAllData, showToast])
+  }, [allAccounts, logMasterChange, fetchAllData, showToast])
+
+  const deleteEmployee = useCallback(async (empId, empName) => {
+    const emp = allAccounts.find(e => e.id === empId)
+    const name = empName || emp?.name || empId
+    const { error } = await supabase
+      .from('employees')
+      .update({ is_active: false })
+      .eq('id', empId)
+    if (error) {
+      showToast('ลบพนักงานไม่สำเร็จ: ' + error.message, 'error')
+      return false
+    }
+    await logMasterChange({
+      actionType: 'delete',
+      entityType: 'employee',
+      entityId: empId,
+      targetName: name,
+      details: `ลบพนักงานออกจากระบบ: ${name} (${emp?.emp_code || empId})`
+    })
+    await fetchAllData(true)
+    showToast(`ลบพนักงาน ${name} ออกจากระบบเรียบร้อยแล้ว`)
+    return true
+  }, [allAccounts, logMasterChange, fetchAllData, showToast])
 
   const upsertTeam = useCallback(async (teamPayload) => {
+    const existing = teams.find(t => t.id === teamPayload.id)
+    const isNew = !existing
     const { error } = await supabase
       .from('teams')
       .upsert(teamPayload, { onConflict: 'id' })
@@ -632,12 +698,23 @@ export function AppProvider({ children }) {
       showToast('บันทึกข้อมูลทีมไม่สำเร็จ: ' + error.message, 'error')
       return false
     }
+    await logMasterChange({
+      actionType: isNew ? 'create' : 'update',
+      entityType: 'team',
+      entityId: teamPayload.id,
+      targetName: teamPayload.name,
+      details: isNew
+        ? `เพิ่มทีมช่างใหม่: ${teamPayload.name} (หน.ทีม: ${teamPayload.lead || '-'})`
+        : `แก้ไขข้อมูลทีม: ${teamPayload.name} (หน.ทีม: ${teamPayload.lead || '-'}, พื้นที่: ${teamPayload.site || '-'})`
+    })
     await fetchAllData(true)
     showToast('บันทึกข้อมูลทีมเรียบร้อย')
     return true
-  }, [fetchAllData, showToast])
+  }, [teams, logMasterChange, fetchAllData, showToast])
 
   const upsertVehicle = useCallback(async (vehPayload) => {
+    const existing = vehicles.find(v => v.id === vehPayload.id)
+    const isNew = !existing
     const { error } = await supabase
       .from('vehicles')
       .upsert(vehPayload, { onConflict: 'id' })
@@ -645,12 +722,23 @@ export function AppProvider({ children }) {
       showToast('บันทึกข้อมูลรถไม่สำเร็จ: ' + error.message, 'error')
       return false
     }
+    await logMasterChange({
+      actionType: isNew ? 'create' : 'update',
+      entityType: 'vehicle',
+      entityId: vehPayload.id,
+      targetName: `${vehPayload.name} (${vehPayload.plate})`,
+      details: isNew
+        ? `เพิ่มรถใหม่: ${vehPayload.name} ทะเบียน ${vehPayload.plate} (${vehPayload.type})`
+        : `แก้ไขข้อมูลรถ: ${vehPayload.name} ทะเบียน ${vehPayload.plate} (สถานะ: ${vehPayload.status})`
+    })
     await fetchAllData(true)
     showToast('บันทึกข้อมูลรถเรียบร้อย')
     return true
-  }, [fetchAllData, showToast])
+  }, [vehicles, logMasterChange, fetchAllData, showToast])
 
   const upsertCustomerSite = useCallback(async (csPayload) => {
+    const existing = customerSites.find(c => c.id === csPayload.id)
+    const isNew = !existing
     const { error } = await supabase
       .from('customer_sites')
       .upsert(csPayload, { onConflict: 'id' })
@@ -658,12 +746,23 @@ export function AppProvider({ children }) {
       showToast('บันทึกสถานที่หน้างานไม่สำเร็จ: ' + error.message, 'error')
       return false
     }
+    await logMasterChange({
+      actionType: isNew ? 'create' : 'update',
+      entityType: 'site',
+      entityId: csPayload.id,
+      targetName: csPayload.name,
+      details: isNew
+        ? `เพิ่มสถานที่หน้างานใหม่: ${csPayload.name}`
+        : `แก้ไขสถานที่หน้างาน: ${csPayload.name} (${csPayload.detail || '-'})`
+    })
     await fetchAllData(true)
     showToast('บันทึกสถานที่หน้างานเรียบร้อย')
     return true
-  }, [fetchAllData, showToast])
+  }, [customerSites, logMasterChange, fetchAllData, showToast])
 
   const upsertOfficeSite = useCallback(async (osPayload) => {
+    const existing = officeSites.find(o => o.id === osPayload.id)
+    const isNew = !existing
     const { error } = await supabase
       .from('office_sites')
       .upsert(osPayload, { onConflict: 'id' })
@@ -671,10 +770,19 @@ export function AppProvider({ children }) {
       showToast('บันทึกข้อมูลสาขาไม่สำเร็จ: ' + error.message, 'error')
       return false
     }
+    await logMasterChange({
+      actionType: isNew ? 'create' : 'update',
+      entityType: 'site',
+      entityId: osPayload.id,
+      targetName: `สาขา${osPayload.name}`,
+      details: isNew
+        ? `เพิ่มสาขาใหม่: สาขา${osPayload.name} (เสมียน: ${osPayload.clerk_name || '-'})`
+        : `แก้ไขสาขา: สาขา${osPayload.name} (เสมียน: ${osPayload.clerk_name || '-'})`
+    })
     await fetchAllData(true)
     showToast('บันทึกข้อมูลสาขาเรียบร้อย')
     return true
-  }, [fetchAllData, showToast])
+  }, [officeSites, logMasterChange, fetchAllData, showToast])
 
   // Mutation: Clerk confirms work order with custom remark/note
   const confirmDailyDispatch = useCallback(async ({
@@ -744,10 +852,17 @@ export function AppProvider({ children }) {
       await fetchAllData(true)
       return false
     }
+    await logMasterChange({
+      actionType: 'permission_change',
+      entityType: 'permission',
+      entityId: `${roleKey}_${moduleKey}`,
+      targetName: `สิทธิ์ ${roleKey} ในเมนู ${moduleKey}`,
+      details: `ปรับสิทธิ์: ดู=${payload.can_view ? 'ได้' : 'ไม่ได้'}, แก้ไข=${payload.can_edit ? 'ได้' : 'ไม่ได้'}, อนุมัติ=${payload.can_approve ? 'ได้' : 'ไม่ได้'}`
+    })
     await fetchAllData(true)
     showToast(`อัปเดตสิทธิ์ ${roleKey} ในเมนู ${moduleKey} สำเร็จ`)
     return true
-  }, [fetchAllData, showToast])
+  }, [logMasterChange, fetchAllData, showToast])
 
   const toggleRolePermission = useCallback(async (permRow, field) => {
     const updatedVal = !permRow[field]
@@ -773,10 +888,17 @@ export function AppProvider({ children }) {
       await fetchAllData(true)
       return false
     }
+    await logMasterChange({
+      actionType: 'permission_change',
+      entityType: 'permission',
+      entityId: String(permRow.id || `${permRow.role_key}_${permRow.module_key}`),
+      targetName: `สิทธิ์ ${permRow.role_key} ในเมนู ${permRow.module_key}`,
+      details: `เปลี่ยนช่อง ${field === 'can_view' ? 'ดู' : field === 'can_edit' ? 'แก้ไข' : 'อนุมัติ'} เป็น: ${updatedVal ? 'เปิด' : 'ปิด'}`
+    })
     await fetchAllData(true)
     showToast('อัปเดตตารางสิทธิ์การใช้งานแล้ว')
     return true
-  }, [fetchAllData, showToast])
+  }, [logMasterChange, fetchAllData, showToast])
 
   const value = {
     selectedDate,
@@ -807,6 +929,8 @@ export function AppProvider({ children }) {
     dailyPunches,
     leaveRequests,
     otRequests,
+    masterAuditLogs,
+    logMasterChange,
     dataLoading,
     fetchAllData,
     getWorkerScheduleForDate,
@@ -823,6 +947,7 @@ export function AppProvider({ children }) {
     decideOtRequest,
     confirmDailyDispatch,
     upsertEmployee,
+    deleteEmployee,
     upsertTeam,
     upsertVehicle,
     upsertCustomerSite,
